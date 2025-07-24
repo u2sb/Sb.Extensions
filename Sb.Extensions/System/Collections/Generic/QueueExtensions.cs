@@ -1,6 +1,5 @@
-﻿using System.Runtime.CompilerServices;
-
-#if NETSTANDARD2_0
+﻿#if NETSTANDARD2_0
+using System.Runtime.CompilerServices;
 
 // ReSharper disable once CheckNamespace
 namespace System.Collections.Generic;
