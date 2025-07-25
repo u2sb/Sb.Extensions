@@ -1,12 +1,11 @@
 using System.Collections;
-using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 namespace System;
 
 /// <summary>
-/// 提供对字节缓冲区的位级别操作的结构体，支持切片、按位访问、批量操作等功能。
+///   提供对字节缓冲区的位级别操作的结构体，支持切片、按位访问、批量操作等功能。
 /// </summary>
 public readonly ref struct BitSpan
 {
@@ -14,12 +13,12 @@ public readonly ref struct BitSpan
   private readonly int _startBitOffset;
 
   /// <summary>
-  /// 获取位段长度（bit）。
+  ///   获取位段长度
   /// </summary>
   public int Length { get; }
 
   /// <summary>
-  /// 使用字节缓冲区、位数和起始位偏移构造位段。
+  ///   使用字节缓冲区、位数和起始位偏移构造位段。
   /// </summary>
   /// <param name="buffer">字节缓冲区</param>
   /// <param name="bitCount">位数</param>
@@ -43,7 +42,7 @@ public readonly ref struct BitSpan
   }
 
   /// <summary>
-  /// 使用字节缓冲区构造位段，长度为缓冲区总位数。
+  ///   使用字节缓冲区构造位段，长度为缓冲区总位数。
   /// </summary>
   /// <param name="buffer">字节缓冲区</param>
   public BitSpan(Span<byte> buffer)
@@ -54,7 +53,7 @@ public readonly ref struct BitSpan
   }
 
   /// <summary>
-  /// 使用 ushort 缓冲区构造位段。
+  ///   使用 ushort 缓冲区构造位段。
   /// </summary>
   /// <param name="buffer">ushort 缓冲区</param>
   public BitSpan(Span<ushort> buffer)
@@ -65,7 +64,7 @@ public readonly ref struct BitSpan
   }
 
   /// <summary>
-  /// 使用 short 缓冲区构造位段。
+  ///   使用 short 缓冲区构造位段。
   /// </summary>
   /// <param name="buffer">short 缓冲区</param>
   public BitSpan(Span<short> buffer)
@@ -76,7 +75,7 @@ public readonly ref struct BitSpan
   }
 
   /// <summary>
-  /// 获取或设置指定索引的位值。
+  ///   获取或设置指定索引的位值。
   /// </summary>
   /// <param name="index">位索引</param>
   /// <returns>指定索引的位值</returns>
@@ -89,7 +88,7 @@ public readonly ref struct BitSpan
   }
 
   /// <summary>
-  /// 获取指定范围的位段切片。
+  ///   获取指定范围的位段切片。
   /// </summary>
   /// <param name="range">位范围</param>
   /// <returns>位段切片</returns>
@@ -104,7 +103,7 @@ public readonly ref struct BitSpan
   }
 
   /// <summary>
-  /// 获取指定起始位和长度的位段切片。
+  ///   获取指定起始位和长度的位段切片。
   /// </summary>
   /// <param name="startBit">起始位</param>
   /// <param name="length">长度</param>
@@ -126,7 +125,7 @@ public readonly ref struct BitSpan
   }
 
   /// <summary>
-  /// 获取指定索引的位值。
+  ///   获取指定索引的位值。
   /// </summary>
   /// <param name="index">位索引</param>
   /// <returns>指定索引的位值</returns>
@@ -143,7 +142,7 @@ public readonly ref struct BitSpan
   }
 
   /// <summary>
-  /// 设置指定索引的位值。
+  ///   设置指定索引的位值。
   /// </summary>
   /// <param name="index">位索引</param>
   /// <param name="value">要设置的位值</param>
@@ -164,7 +163,7 @@ public readonly ref struct BitSpan
   }
 
   /// <summary>
-  /// 将所有位设置为指定值。
+  ///   将所有位设置为指定值。
   /// </summary>
   /// <param name="value">要设置的位值</param>
   public void SetAll(bool value)
@@ -218,7 +217,7 @@ public readonly ref struct BitSpan
   }
 
   /// <summary>
-  /// 对指定范围的位批量设置为指定值。
+  ///   对指定范围的位批量设置为指定值。
   /// </summary>
   /// <param name="startBit">起始位</param>
   /// <param name="bitCount">位数</param>
@@ -227,15 +226,15 @@ public readonly ref struct BitSpan
   {
     if (bitCount <= 0) return;
 
-    int firstBit = _startBitOffset + startBit;
-    int firstByte = firstBit >> 3;
-    int firstBitInByte = firstBit & 7;
+    var firstBit = _startBitOffset + startBit;
+    var firstByte = firstBit >> 3;
+    var firstBitInByte = firstBit & 7;
 
     // 处理首字节部分位
-    int bitsInFirstByte = Math.Min(8 - firstBitInByte, bitCount);
+    var bitsInFirstByte = Math.Min(8 - firstBitInByte, bitCount);
     if (bitsInFirstByte < 8)
     {
-      byte mask = (byte)(((1 << bitsInFirstByte) - 1) << firstBitInByte);
+      var mask = (byte)(((1 << bitsInFirstByte) - 1) << firstBitInByte);
       if (value)
         _span[firstByte] |= mask;
       else
@@ -245,19 +244,19 @@ public readonly ref struct BitSpan
     }
 
     // 处理中间完整字节
-    int fullBytes = bitCount >> 3;
+    var fullBytes = bitCount >> 3;
     if (fullBytes > 0)
     {
-      byte pattern = value ? (byte)0xFF : (byte)0x00;
+      var pattern = value ? (byte)0xFF : (byte)0x00;
       _span.Slice(firstByte, fullBytes).Fill(pattern);
       firstByte += fullBytes;
     }
 
     // 处理尾部零头
-    int lastBits = bitCount & 7;
+    var lastBits = bitCount & 7;
     if (lastBits > 0)
     {
-      byte mask = (byte)((1 << lastBits) - 1);
+      var mask = (byte)((1 << lastBits) - 1);
       if (value)
         _span[firstByte] |= mask;
       else
@@ -266,7 +265,7 @@ public readonly ref struct BitSpan
   }
 
   /// <summary>
-  /// 对所有位取反。
+  ///   对所有位取反。
   /// </summary>
   public void Not()
   {
@@ -299,7 +298,7 @@ public readonly ref struct BitSpan
   }
 
   /// <summary>
-  /// 对指定范围的位批量取反。
+  ///   对指定范围的位批量取反。
   /// </summary>
   /// <param name="startBit">起始位</param>
   /// <param name="bitCount">位数</param>
@@ -307,34 +306,34 @@ public readonly ref struct BitSpan
   {
     if (bitCount <= 0) return;
 
-    int firstBit = _startBitOffset + startBit;
-    int firstByte = firstBit >> 3;
-    int firstBitInByte = firstBit & 7;
+    var firstBit = _startBitOffset + startBit;
+    var firstByte = firstBit >> 3;
+    var firstBitInByte = firstBit & 7;
 
-    int bitsInFirstByte = Math.Min(8 - firstBitInByte, bitCount);
+    var bitsInFirstByte = Math.Min(8 - firstBitInByte, bitCount);
     if (bitsInFirstByte < 8)
     {
-      byte mask = (byte)(((1 << bitsInFirstByte) - 1) << firstBitInByte);
+      var mask = (byte)(((1 << bitsInFirstByte) - 1) << firstBitInByte);
       _span[firstByte] ^= mask;
       bitCount -= bitsInFirstByte;
       firstByte++;
     }
 
-    int fullBytes = bitCount >> 3;
-    for (int i = 0; i < fullBytes; i++)
+    var fullBytes = bitCount >> 3;
+    for (var i = 0; i < fullBytes; i++)
       _span[firstByte + i] = (byte)~_span[firstByte + i];
     firstByte += fullBytes;
 
-    int lastBits = bitCount & 7;
+    var lastBits = bitCount & 7;
     if (lastBits > 0)
     {
-      byte mask = (byte)((1 << lastBits) - 1);
+      var mask = (byte)((1 << lastBits) - 1);
       _span[firstByte] ^= mask;
     }
   }
 
   /// <summary>
-  /// 对应位与另一个 BitSpan 做按位与操作。
+  ///   对应位与另一个 BitSpan 做按位与操作。
   /// </summary>
   /// <param name="other">另一个 BitSpan</param>
   public void And(BitSpan other)
@@ -345,7 +344,7 @@ public readonly ref struct BitSpan
   }
 
   /// <summary>
-  /// 对应位与另一个 BitSpan 做按位或操作。
+  ///   对应位与另一个 BitSpan 做按位或操作。
   /// </summary>
   /// <param name="other">另一个 BitSpan</param>
   public void Or(BitSpan other)
@@ -356,7 +355,7 @@ public readonly ref struct BitSpan
   }
 
   /// <summary>
-  /// 对应位与另一个 BitSpan 做按位异或操作。
+  ///   对应位与另一个 BitSpan 做按位异或操作。
   /// </summary>
   /// <param name="other">另一个 BitSpan</param>
   public void Xor(BitSpan other)
@@ -367,7 +366,7 @@ public readonly ref struct BitSpan
   }
 
   /// <summary>
-  /// 对应位与另一个 BitSpan 做自定义按位操作。
+  ///   对应位与另一个 BitSpan 做自定义按位操作。
   /// </summary>
   /// <param name="other">另一个 BitSpan</param>
   /// <param name="op">按位操作委托</param>
@@ -377,7 +376,7 @@ public readonly ref struct BitSpan
   }
 
   /// <summary>
-  /// 转换为 BitArray。
+  ///   转换为 BitArray。
   /// </summary>
   /// <returns>包含所有位的 BitArray</returns>
   public BitArray ToBitArray()
@@ -387,7 +386,7 @@ public readonly ref struct BitSpan
   }
 
   /// <summary>
-  /// 拷贝位段到目标 bool 数组。
+  ///   拷贝位段到目标 bool 数组。
   /// </summary>
   /// <param name="destination">目标 bool 数组</param>
   /// <exception cref="ArgumentException">目标数组长度不足</exception>
@@ -401,7 +400,7 @@ public readonly ref struct BitSpan
   }
 
   /// <summary>
-  /// 转换为 bool 数组。
+  ///   转换为 bool 数组。
   /// </summary>
   /// <returns>包含所有位的 bool 数组</returns>
   public bool[] ToBoolArray()
@@ -412,7 +411,7 @@ public readonly ref struct BitSpan
   }
 
   /// <summary>
-  /// 获取位段的枚举器。
+  ///   获取位段的枚举器。
   /// </summary>
   /// <returns>位段枚举器</returns>
   public Enumerator GetEnumerator()
@@ -421,7 +420,7 @@ public readonly ref struct BitSpan
   }
 
   /// <summary>
-  /// 位段枚举器。
+  ///   位段枚举器。
   /// </summary>
   /// <param name="bitSpan">要枚举的 BitSpan</param>
   public ref struct Enumerator(BitSpan bitSpan)
@@ -430,7 +429,7 @@ public readonly ref struct BitSpan
     private int _index = -1;
 
     /// <summary>
-    /// 获取当前位的值。
+    ///   获取当前位的值。
     /// </summary>
     public bool Current
     {
@@ -439,7 +438,7 @@ public readonly ref struct BitSpan
     }
 
     /// <summary>
-    /// 移动到下一个位。
+    ///   移动到下一个位。
     /// </summary>
     /// <returns>是否还有下一个位</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -449,16 +448,19 @@ public readonly ref struct BitSpan
     }
 
     /// <summary>
-    /// 让枚举器也可以使用 foreach
+    ///   让枚举器也可以使用 foreach
     /// </summary>
     /// <returns></returns>
-    public Enumerator GetEnumerator() => this;
+    public Enumerator GetEnumerator()
+    {
+      return this;
+    }
   }
 
   #region 获取数据
 
   /// <summary>
-  /// 获取指定偏移和长度的字节值。
+  ///   获取指定偏移和长度的字节值。
   /// </summary>
   /// <param name="offset">起始位偏移</param>
   /// <param name="length">位长度（默认8）</param>
@@ -469,7 +471,7 @@ public readonly ref struct BitSpan
   }
 
   /// <summary>
-  /// 获取指定偏移和长度的 ushort 值。
+  ///   获取指定偏移和长度的 ushort 值。
   /// </summary>
   /// <param name="offset">起始位偏移</param>
   /// <param name="length">位长度（默认16）</param>
@@ -481,7 +483,7 @@ public readonly ref struct BitSpan
   }
 
   /// <summary>
-  /// 获取指定偏移和长度的 uint 值。
+  ///   获取指定偏移和长度的 uint 值。
   /// </summary>
   /// <param name="offset">起始位偏移</param>
   /// <param name="length">位长度（默认32）</param>
@@ -493,7 +495,7 @@ public readonly ref struct BitSpan
   }
 
   /// <summary>
-  /// 获取指定偏移和长度的 T 类型值。
+  ///   获取指定偏移和长度的 T 类型值。
   /// </summary>
   /// <typeparam name="T">目标类型</typeparam>
   /// <param name="offset">起始位偏移</param>
@@ -508,7 +510,7 @@ public readonly ref struct BitSpan
   }
 
   /// <summary>
-  /// 拷贝指定范围的位到目标字节数组。
+  ///   拷贝指定范围的位到目标字节数组。
   /// </summary>
   /// <param name="destination">目标字节数组</param>
   /// <param name="bitOffset">起始位偏移</param>
@@ -581,9 +583,8 @@ public readonly ref struct BitSpan
   #endregion
 }
 
-
 /// <summary>
-/// 只读位段，支持 ReadOnlySpan 等类型的只读位访问。
+///   只读位段，支持 ReadOnlySpan 等类型的只读位访问。
 /// </summary>
 public readonly ref struct ReadOnlyBitSpan
 {
@@ -591,12 +592,12 @@ public readonly ref struct ReadOnlyBitSpan
   private readonly int _startBitOffset;
 
   /// <summary>
-  /// 获取位段长度（bit）。
+  ///   获取位段长度（bit）。
   /// </summary>
   public int Length { get; }
 
   /// <summary>
-  /// 使用只读字节缓冲区、位数和起始位偏移构造只读位段。
+  ///   使用只读字节缓冲区、位数和起始位偏移构造只读位段。
   /// </summary>
   /// <param name="buffer">只读字节缓冲区</param>
   /// <param name="bitCount">位数</param>
@@ -620,7 +621,7 @@ public readonly ref struct ReadOnlyBitSpan
   }
 
   /// <summary>
-  /// 使用只读字节缓冲区构造只读位段，长度为缓冲区总位数。
+  ///   使用只读字节缓冲区构造只读位段，长度为缓冲区总位数。
   /// </summary>
   /// <param name="buffer">只读字节缓冲区</param>
   public ReadOnlyBitSpan(ReadOnlySpan<byte> buffer)
@@ -631,7 +632,7 @@ public readonly ref struct ReadOnlyBitSpan
   }
 
   /// <summary>
-  /// 使用只读 ushort 缓冲区构造只读位段。
+  ///   使用只读 ushort 缓冲区构造只读位段。
   /// </summary>
   /// <param name="buffer">只读 ushort 缓冲区</param>
   public ReadOnlyBitSpan(ReadOnlySpan<ushort> buffer)
@@ -642,7 +643,7 @@ public readonly ref struct ReadOnlyBitSpan
   }
 
   /// <summary>
-  /// 使用只读 short 缓冲区构造只读位段。
+  ///   使用只读 short 缓冲区构造只读位段。
   /// </summary>
   /// <param name="buffer">只读 short 缓冲区</param>
   public ReadOnlyBitSpan(ReadOnlySpan<short> buffer)
@@ -653,7 +654,7 @@ public readonly ref struct ReadOnlyBitSpan
   }
 
   /// <summary>
-  /// 按位只读索引器
+  ///   按位只读索引器
   /// </summary>
   public bool this[int index]
   {
@@ -662,7 +663,7 @@ public readonly ref struct ReadOnlyBitSpan
   }
 
   /// <summary>
-  /// 按范围切片
+  ///   按范围切片
   /// </summary>
   public ReadOnlyBitSpan this[Range range]
   {
@@ -675,7 +676,7 @@ public readonly ref struct ReadOnlyBitSpan
   }
 
   /// <summary>
-  /// 切片
+  ///   切片
   /// </summary>
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public ReadOnlyBitSpan Slice(int startBit, int length)
@@ -694,7 +695,7 @@ public readonly ref struct ReadOnlyBitSpan
   }
 
   /// <summary>
-  /// 获取指定索引的位值。
+  ///   获取指定索引的位值。
   /// </summary>
   /// <param name="index">位索引</param>
   /// <returns>指定索引的位值</returns>
@@ -711,7 +712,7 @@ public readonly ref struct ReadOnlyBitSpan
   }
 
   /// <summary>
-  /// 拷贝位段到目标 bool 数组。
+  ///   拷贝位段到目标 bool 数组。
   /// </summary>
   /// <param name="destination">目标 bool 数组</param>
   /// <exception cref="ArgumentException">目标数组长度不足</exception>
@@ -725,7 +726,7 @@ public readonly ref struct ReadOnlyBitSpan
   }
 
   /// <summary>
-  /// 转换为 bool 数组。
+  ///   转换为 bool 数组。
   /// </summary>
   /// <returns>包含所有位的 bool 数组</returns>
   public bool[] ToBoolArray()
@@ -736,7 +737,7 @@ public readonly ref struct ReadOnlyBitSpan
   }
 
   /// <summary>
-  /// 转换为 BitArray。
+  ///   转换为 BitArray。
   /// </summary>
   /// <returns>包含所有位的 BitArray</returns>
   public BitArray ToBitArray()
@@ -746,13 +747,16 @@ public readonly ref struct ReadOnlyBitSpan
   }
 
   /// <summary>
-  /// 获取位段的枚举器。
+  ///   获取位段的枚举器。
   /// </summary>
   /// <returns>位段枚举器</returns>
-  public Enumerator GetEnumerator() => new Enumerator(this);
+  public Enumerator GetEnumerator()
+  {
+    return new Enumerator(this);
+  }
 
   /// <summary>
-  /// 只读位段枚举器。
+  ///   只读位段枚举器。
   /// </summary>
   public ref struct Enumerator
   {
@@ -760,7 +764,7 @@ public readonly ref struct ReadOnlyBitSpan
     private int _index;
 
     /// <summary>
-    /// 获取枚举器
+    ///   获取枚举器
     /// </summary>
     /// <param name="bitSpan"></param>
     public Enumerator(ReadOnlyBitSpan bitSpan)
@@ -770,7 +774,7 @@ public readonly ref struct ReadOnlyBitSpan
     }
 
     /// <summary>
-    /// 获取当前位的值。
+    ///   获取当前位的值。
     /// </summary>
     public bool Current
     {
@@ -779,24 +783,30 @@ public readonly ref struct ReadOnlyBitSpan
     }
 
     /// <summary>
-    /// 移动到下一个位。
+    ///   移动到下一个位。
     /// </summary>
     /// <returns>是否还有下一个位</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public bool MoveNext() => ++_index < _bitSpan.Length;
+    public bool MoveNext()
+    {
+      return ++_index < _bitSpan.Length;
+    }
 
     /// <summary>
-    /// 为枚举器实现 foreach 支持
+    ///   为枚举器实现 foreach 支持
     /// </summary>
     /// <returns></returns>
-    public Enumerator GetEnumerator() => this;
+    public Enumerator GetEnumerator()
+    {
+      return this;
+    }
   }
 }
 
 #region 异常处理
 
 /// <summary>
-/// BitSpan/ReadOnlyBitSpan internal exception helper class with detailed parameter info.
+///   BitSpan/ReadOnlyBitSpan internal exception helper class with detailed parameter info.
 /// </summary>
 internal class BitSpanException
 {

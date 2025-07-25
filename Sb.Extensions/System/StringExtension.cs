@@ -20,7 +20,25 @@ public static class StringExtension
   /// <param name="s">字符串</param>
   extension(string? s)
   {
+    #region GetBytes
+
+    /// <summary>
+    ///   将字符串转换为字节数组
+    /// </summary>
+    /// <returns>字节数组</returns>
+    public byte[] GetBytes(Encoding? encoding = null)
+    {
+      if (s.IsNullOrEmpty()) return [];
+
+      if (encoding == null) encoding = Encoding.Default;
+
+      return encoding.GetBytes(s ?? string.Empty);
+    }
+
+    #endregion
+
     #region TryParse
+
     /// <summary>
     ///   判断字符串是否为 byte
     /// </summary>
@@ -232,12 +250,13 @@ public static class StringExtension
     {
       return double.TryParse(s, out result);
     }
+
     #endregion
 
     #region NullOrEmpty
 
     /// <summary>
-    /// 判断是否为空
+    ///   判断是否为空
     /// </summary>
     /// <returns></returns>
     public bool IsNullOrEmpty()
@@ -246,7 +265,7 @@ public static class StringExtension
     }
 
     /// <summary>
-    /// 判断是否为空或空行
+    ///   判断是否为空或空行
     /// </summary>
     /// <returns></returns>
     public bool IsNullOrWhiteSpace()
@@ -259,59 +278,29 @@ public static class StringExtension
     #region Concat
 
     /// <summary>
-    /// 拼接字符串
+    ///   拼接字符串
     /// </summary>
     /// <param name="values"></param>
     /// <returns></returns>
     public string Concat(string values)
     {
-      if (string.IsNullOrEmpty(values))
-      {
-        return s ?? string.Empty;
-      }
+      if (string.IsNullOrEmpty(values)) return s ?? string.Empty;
 
       return string.Concat(s, values);
     }
 
     /// <summary>
-    /// 拼接字符串
+    ///   拼接字符串
     /// </summary>
     /// <param name="values"></param>
     /// <returns></returns>
     public string Concat(params string[] values)
     {
-      if (values == null || values.Length == 0)
-      {
-        return s ?? string.Empty;
-      }
+      if (values == null || values.Length == 0) return s ?? string.Empty;
 
       return string.Concat(s, string.Join(string.Empty, values));
     }
 
     #endregion
-
-    #region GetBytes
-
-    /// <summary>
-    /// 将字符串转换为字节数组
-    /// </summary>
-    /// <returns>字节数组</returns>
-    public byte[] GetBytes(Encoding? encoding = null)
-    {
-      if (s.IsNullOrEmpty())
-      {
-        return [];
-      }
-
-      if (encoding == null)
-      {
-        encoding = Encoding.Default;
-      }
-
-      return encoding.GetBytes(s ?? string.Empty);
-    }
-
-    #endregion
-
   }
 }

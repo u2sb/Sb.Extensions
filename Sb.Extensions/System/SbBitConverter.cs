@@ -1,8 +1,9 @@
-﻿using System.Buffers;
+using System.Buffers;
 using System.Buffers.Binary;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
+// ReSharper disable once CheckNamespace
 namespace System;
 
 #region 大小端枚举
