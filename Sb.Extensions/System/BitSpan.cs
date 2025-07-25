@@ -759,6 +759,10 @@ public readonly ref struct ReadOnlyBitSpan
     private readonly ReadOnlyBitSpan _bitSpan;
     private int _index;
 
+    /// <summary>
+    /// 获取枚举器
+    /// </summary>
+    /// <param name="bitSpan"></param>
     public Enumerator(ReadOnlyBitSpan bitSpan)
     {
       _bitSpan = bitSpan;
@@ -780,6 +784,12 @@ public readonly ref struct ReadOnlyBitSpan
     /// <returns>是否还有下一个位</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool MoveNext() => ++_index < _bitSpan.Length;
+
+    /// <summary>
+    /// 为枚举器实现 foreach 支持
+    /// </summary>
+    /// <returns></returns>
+    public Enumerator GetEnumerator() => this;
   }
 }
 
