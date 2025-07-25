@@ -49,7 +49,6 @@ public sealed class StringBufferWriter : IBufferWriter<char>
   public ReadOnlyMemory<char> WrittenMemory => _buffer.AsMemory(0, _index);
 
   /// <summary>
-  ///   、
   ///   写入的内容
   /// </summary>
   public ReadOnlySpan<char> WrittenSpan => _buffer.AsSpan(0, _index);
