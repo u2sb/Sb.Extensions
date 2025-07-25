@@ -58,11 +58,17 @@ public sealed class StringBufferWriter : IBufferWriter<char>
   /// </summary>
   public string WrittenString => WrittenSpan.ToString();
 
-  // ReSharper disable once ConvertToAutoPropertyWithPrivateSetter
-  /// <summary>
-  ///   写入的长度
-  /// </summary>
-  public int WrittenCount => _index;
+    /// <summary>
+    ///  写入的内容
+    /// </summary>
+    /// <returns></returns>
+    public override string ToString() => WrittenString;
+
+    // ReSharper disable once ConvertToAutoPropertyWithPrivateSetter
+    /// <summary>
+    ///   写入的长度
+    /// </summary>
+    public int WrittenCount => _index;
 
   /// <summary>
   ///   分配的总长度
