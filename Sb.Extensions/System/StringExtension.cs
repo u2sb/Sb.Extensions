@@ -55,7 +55,7 @@ public static class StringExtension
     /// <param name="result">转换结果</param>
     /// <returns>是否转换成功</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public bool TyrParseToByte(out byte result)
+    public bool TryParseToByte(out byte result)
     {
       return byte.TryParse(s, out result);
     }
@@ -76,7 +76,7 @@ public static class StringExtension
     /// <param name="result">转换结果</param>
     /// <returns>是否转换成功</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public bool TyrParseToSByte(out sbyte result)
+    public bool TryParseToSByte(out sbyte result)
     {
       return sbyte.TryParse(s, out result);
     }
@@ -97,7 +97,7 @@ public static class StringExtension
     /// <param name="result">转换结果</param>
     /// <returns>是否转换成功</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public bool TyrParseToInt16(out short result)
+    public bool TryParseToInt16(out short result)
     {
       return short.TryParse(s, out result);
     }
@@ -119,7 +119,7 @@ public static class StringExtension
     /// <param name="result">转换结果</param>
     /// <returns>是否转换成功</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public bool TyrParseToUInt16(out ushort result)
+    public bool TryParseToUInt16(out ushort result)
     {
       return ushort.TryParse(s, out result);
     }
@@ -141,7 +141,7 @@ public static class StringExtension
     /// <param name="result">转换结果</param>
     /// <returns>是否转换成功</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public bool TyrParseToInt32(out int result)
+    public bool TryParseToInt32(out int result)
     {
       return int.TryParse(s, out result);
     }
@@ -162,7 +162,7 @@ public static class StringExtension
     /// <param name="result">转换结果</param>
     /// <returns>是否转换成功</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public bool TyrParseToUInt32(out uint result)
+    public bool TryParseToUInt32(out uint result)
     {
       return uint.TryParse(s, out result);
     }
@@ -183,7 +183,7 @@ public static class StringExtension
     /// <param name="result">转换结果</param>
     /// <returns>是否转换成功</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public bool TyrParseToInt64(out long result)
+    public bool TryParseToInt64(out long result)
     {
       return long.TryParse(s, out result);
     }
@@ -204,7 +204,7 @@ public static class StringExtension
     /// <param name="result">转换结果</param>
     /// <returns>是否转换成功</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public bool TyrParseToUInt64(out ulong result)
+    public bool TryParseToUInt64(out ulong result)
     {
       return ulong.TryParse(s, out result);
     }
@@ -225,7 +225,7 @@ public static class StringExtension
     /// <param name="result">转换结果</param>
     /// <returns>是否转换成功</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public bool TyrParseToFloat(out float result)
+    public bool TryParseToFloat(out float result)
     {
       return float.TryParse(s, out result);
     }
@@ -237,7 +237,7 @@ public static class StringExtension
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool IsDouble()
     {
-      return float.TryParse(s, out _);
+      return double.TryParse(s, out _);
     }
 
     /// <summary>
@@ -246,7 +246,7 @@ public static class StringExtension
     /// <param name="result">转换结果</param>
     /// <returns>是否转换成功</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public bool TyrParseToDouble(out double result)
+    public bool TryParseToDouble(out double result)
     {
       return double.TryParse(s, out result);
     }
@@ -271,34 +271,6 @@ public static class StringExtension
     public bool IsNullOrWhiteSpace()
     {
       return string.IsNullOrWhiteSpace(s);
-    }
-
-    #endregion
-
-    #region Concat
-
-    /// <summary>
-    ///   拼接字符串
-    /// </summary>
-    /// <param name="values"></param>
-    /// <returns></returns>
-    public string Concat(string values)
-    {
-      if (string.IsNullOrEmpty(values)) return s ?? string.Empty;
-
-      return string.Concat(s, values);
-    }
-
-    /// <summary>
-    ///   拼接字符串
-    /// </summary>
-    /// <param name="values"></param>
-    /// <returns></returns>
-    public string Concat(params string[] values)
-    {
-      if (values == null || values.Length == 0) return s ?? string.Empty;
-
-      return string.Concat(s, string.Join(string.Empty, values));
     }
 
     #endregion
