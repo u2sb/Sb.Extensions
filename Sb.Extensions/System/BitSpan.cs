@@ -2,6 +2,8 @@ using System.Collections;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
+// 命名空间不要改
+// ReSharper disable once CheckNamespace
 namespace System;
 
 /// <summary>
@@ -73,6 +75,11 @@ public readonly ref struct BitSpan
     Length = _span.Length * 8;
     _startBitOffset = 0;
   }
+
+  /// <summary>
+  /// </summary>
+  public Span<byte> Span => _span;
+
 
   /// <summary>
   ///   获取或设置指定索引的位值。
