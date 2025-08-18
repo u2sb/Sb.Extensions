@@ -81,6 +81,23 @@ public static class SbBitConverter
   }
 
   /// <summary>
+  ///   byte 拓展
+  /// </summary>
+  /// <param name="source"></param>
+  extension(scoped in byte source)
+  {
+    /// <summary>
+    ///   解释为 ReadOnlyByteSpan
+    /// </summary>
+    /// <returns></returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public ReadOnlySpan<byte> AsReadOnlyByteSpan()
+    {
+      return SpanExtension.CreateReadOnlySpan(ref Unsafe.AsRef(in source), sizeof(byte));
+    }
+  }
+
+  /// <summary>
   ///   sbyte 拓展
   /// </summary>
   /// <param name="source"></param>
@@ -112,6 +129,23 @@ public static class SbBitConverter
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void ApplyEndianness(bool useBigEndianMode = false)
     {
+    }
+  }
+
+  /// <summary>
+  ///   sbyte 拓展
+  /// </summary>
+  /// <param name="source"></param>
+  extension(scoped in sbyte source)
+  {
+    /// <summary>
+    ///   解释为 ReadOnlyByteSpan
+    /// </summary>
+    /// <returns></returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public ReadOnlySpan<byte> AsReadOnlyByteSpan()
+    {
+      return SpanExtension.CreateReadOnlySpan(ref Unsafe.As<sbyte, byte>(ref Unsafe.AsRef(in source)), sizeof(sbyte));
     }
   }
 
@@ -154,6 +188,23 @@ public static class SbBitConverter
   }
 
   /// <summary>
+  ///   short 拓展
+  /// </summary>
+  /// <param name="source"></param>
+  extension(scoped in short source)
+  {
+    /// <summary>
+    ///   解释为 ReadOnlyByteSpan
+    /// </summary>
+    /// <returns></returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public ReadOnlySpan<byte> AsReadOnlyByteSpan()
+    {
+      return SpanExtension.CreateReadOnlySpan(ref Unsafe.As<short, byte>(ref Unsafe.AsRef(in source)), sizeof(short));
+    }
+  }
+
+  /// <summary>
   ///   ushort 拓展
   /// </summary>
   /// <param name="source"></param>
@@ -192,6 +243,23 @@ public static class SbBitConverter
   }
 
   /// <summary>
+  ///   ushort 拓展
+  /// </summary>
+  /// <param name="source"></param>
+  extension(scoped in ushort source)
+  {
+    /// <summary>
+    ///   解释为 ReadOnlyByteSpan
+    /// </summary>
+    /// <returns></returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public ReadOnlySpan<byte> AsReadOnlyByteSpan()
+    {
+      return SpanExtension.CreateReadOnlySpan(ref Unsafe.As<ushort, byte>(ref Unsafe.AsRef(in source)), sizeof(ushort));
+    }
+  }
+
+  /// <summary>
   ///   int 拓展
   /// </summary>
   /// <param name="source"></param>
@@ -226,6 +294,23 @@ public static class SbBitConverter
     public void ApplyEndianness(bool useBigEndianMode = false)
     {
       source = source.WithEndianness(useBigEndianMode);
+    }
+  }
+
+  /// <summary>
+  ///   int 拓展
+  /// </summary>
+  /// <param name="source"></param>
+  extension(scoped in int source)
+  {
+    /// <summary>
+    ///   解释为 ReadOnlyByteSpan
+    /// </summary>
+    /// <returns></returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public ReadOnlySpan<byte> AsReadOnlyByteSpan()
+    {
+      return SpanExtension.CreateReadOnlySpan(ref Unsafe.As<int, byte>(ref Unsafe.AsRef(in source)), sizeof(int));
     }
   }
 
@@ -269,6 +354,23 @@ public static class SbBitConverter
   }
 
   /// <summary>
+  ///   uint 拓展
+  /// </summary>
+  /// <param name="source"></param>
+  extension(scoped in uint source)
+  {
+    /// <summary>
+    ///   解释为 ReadOnlyByteSpan
+    /// </summary>
+    /// <returns></returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public ReadOnlySpan<byte> AsReadOnlyByteSpan()
+    {
+      return SpanExtension.CreateReadOnlySpan(ref Unsafe.As<uint, byte>(ref Unsafe.AsRef(in source)), sizeof(uint));
+    }
+  }
+
+  /// <summary>
   ///   long 拓展
   /// </summary>
   /// <param name="source"></param>
@@ -307,6 +409,23 @@ public static class SbBitConverter
   }
 
   /// <summary>
+  ///   long 拓展
+  /// </summary>
+  /// <param name="source"></param>
+  extension(scoped in long source)
+  {
+    /// <summary>
+    ///   解释为 ReadOnlyByteSpan
+    /// </summary>
+    /// <returns></returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public ReadOnlySpan<byte> AsReadOnlyByteSpan()
+    {
+      return SpanExtension.CreateReadOnlySpan(ref Unsafe.As<long, byte>(ref Unsafe.AsRef(in source)), sizeof(long));
+    }
+  }
+
+  /// <summary>
   ///   ulong 拓展
   /// </summary>
   /// <param name="source"></param>
@@ -341,6 +460,23 @@ public static class SbBitConverter
     public void ApplyEndianness(bool useBigEndianMode = false)
     {
       source = source.WithEndianness(useBigEndianMode);
+    }
+  }
+
+  /// <summary>
+  ///   ulong 拓展
+  /// </summary>
+  /// <param name="source"></param>
+  extension(scoped in ulong source)
+  {
+    /// <summary>
+    ///   解释为 ReadOnlyByteSpan
+    /// </summary>
+    /// <returns></returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public ReadOnlySpan<byte> AsReadOnlyByteSpan()
+    {
+      return SpanExtension.CreateReadOnlySpan(ref Unsafe.As<ulong, byte>(ref Unsafe.AsRef(in source)), sizeof(ulong));
     }
   }
 
@@ -388,6 +524,23 @@ public static class SbBitConverter
   }
 
   /// <summary>
+  ///   float 拓展
+  /// </summary>
+  /// <param name="source"></param>
+  extension(scoped in float source)
+  {
+    /// <summary>
+    ///   解释为 ReadOnlyByteSpan
+    /// </summary>
+    /// <returns></returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public ReadOnlySpan<byte> AsReadOnlyByteSpan()
+    {
+      return SpanExtension.CreateReadOnlySpan(ref Unsafe.As<float, byte>(ref Unsafe.AsRef(in source)), sizeof(float));
+    }
+  }
+
+  /// <summary>
   ///   double 拓展
   /// </summary>
   /// <param name="source"></param>
@@ -427,6 +580,23 @@ public static class SbBitConverter
           ? BigAndSmallEndianEncodingMode.ABCD
           : BigAndSmallEndianEncodingMode.DCBA);
       }
+    }
+  }
+
+  /// <summary>
+  ///   double 拓展
+  /// </summary>
+  /// <param name="source"></param>
+  extension(scoped in double source)
+  {
+    /// <summary>
+    ///   解释为 ReadOnlyByteSpan
+    /// </summary>
+    /// <returns></returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public ReadOnlySpan<byte> AsReadOnlyByteSpan()
+    {
+      return SpanExtension.CreateReadOnlySpan(ref Unsafe.As<double, byte>(ref Unsafe.AsRef(in source)), sizeof(double));
     }
   }
 
@@ -471,7 +641,7 @@ public static class SbBitConverter
     }
 
     /// <summary>
-    ///   解释为为 ByteSpan
+    ///   解释为 ReadOnlyByteSpan
     /// </summary>
     /// <returns></returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -1083,6 +1253,23 @@ public static class SbBitConverter
   /// <summary>
   ///   Int128 拓展
   /// </summary>
+  /// <param name="source"></param>
+  extension(scoped in Int128 source)
+  {
+    /// <summary>
+    ///   解释为 ReadOnlyByteSpan
+    /// </summary>
+    /// <returns></returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public ReadOnlySpan<Int128> AsReadOnlyByteSpan()
+    {
+      return SpanExtension.CreateReadOnlySpan(ref Unsafe.AsRef(in source), Unsafe.SizeOf<Int128>());
+    }
+  }
+
+  /// <summary>
+  ///   Int128 拓展
+  /// </summary>
   extension(UInt128 source)
   {
     /// <summary>
@@ -1113,6 +1300,23 @@ public static class SbBitConverter
     public void ApplyEndianness(bool useBigEndianMode = false)
     {
       source = source.WithEndianness(useBigEndianMode);
+    }
+  }
+
+  /// <summary>
+  ///   UInt128 拓展
+  /// </summary>
+  /// <param name="source"></param>
+  extension(scoped in UInt128 source)
+  {
+    /// <summary>
+    ///   解释为 ReadOnlyByteSpan
+    /// </summary>
+    /// <returns></returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public ReadOnlySpan<UInt128> AsReadOnlyByteSpan()
+    {
+      return SpanExtension.CreateReadOnlySpan(ref Unsafe.AsRef(in source), Unsafe.SizeOf<UInt128>());
     }
   }
 
