@@ -93,7 +93,7 @@ public static class SbBitConverter
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public ReadOnlySpan<byte> AsReadOnlyByteSpan()
     {
-      return SpanExtension.CreateReadOnlySpan(ref Unsafe.AsRef(in source), sizeof(byte));
+      return SpanExtension.CreateReadOnlySpan(in source);
     }
   }
 
@@ -145,7 +145,7 @@ public static class SbBitConverter
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public ReadOnlySpan<byte> AsReadOnlyByteSpan()
     {
-      return SpanExtension.CreateReadOnlySpan(ref Unsafe.As<sbyte, byte>(ref Unsafe.AsRef(in source)), sizeof(sbyte));
+      return MemoryMarshal.AsBytes(SpanExtension.CreateReadOnlySpan(in source));
     }
   }
 
@@ -200,7 +200,7 @@ public static class SbBitConverter
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public ReadOnlySpan<byte> AsReadOnlyByteSpan()
     {
-      return SpanExtension.CreateReadOnlySpan(ref Unsafe.As<short, byte>(ref Unsafe.AsRef(in source)), sizeof(short));
+      return MemoryMarshal.AsBytes(SpanExtension.CreateReadOnlySpan(in source));
     }
   }
 
@@ -255,7 +255,7 @@ public static class SbBitConverter
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public ReadOnlySpan<byte> AsReadOnlyByteSpan()
     {
-      return SpanExtension.CreateReadOnlySpan(ref Unsafe.As<ushort, byte>(ref Unsafe.AsRef(in source)), sizeof(ushort));
+      return MemoryMarshal.AsBytes(SpanExtension.CreateReadOnlySpan(in source));
     }
   }
 
@@ -310,7 +310,7 @@ public static class SbBitConverter
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public ReadOnlySpan<byte> AsReadOnlyByteSpan()
     {
-      return SpanExtension.CreateReadOnlySpan(ref Unsafe.As<int, byte>(ref Unsafe.AsRef(in source)), sizeof(int));
+      return MemoryMarshal.AsBytes(SpanExtension.CreateReadOnlySpan(in source));
     }
   }
 
@@ -366,7 +366,7 @@ public static class SbBitConverter
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public ReadOnlySpan<byte> AsReadOnlyByteSpan()
     {
-      return SpanExtension.CreateReadOnlySpan(ref Unsafe.As<uint, byte>(ref Unsafe.AsRef(in source)), sizeof(uint));
+      return MemoryMarshal.AsBytes(SpanExtension.CreateReadOnlySpan(in source));
     }
   }
 
@@ -421,7 +421,7 @@ public static class SbBitConverter
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public ReadOnlySpan<byte> AsReadOnlyByteSpan()
     {
-      return SpanExtension.CreateReadOnlySpan(ref Unsafe.As<long, byte>(ref Unsafe.AsRef(in source)), sizeof(long));
+      return MemoryMarshal.AsBytes(SpanExtension.CreateReadOnlySpan(in source));
     }
   }
 
@@ -476,7 +476,7 @@ public static class SbBitConverter
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public ReadOnlySpan<byte> AsReadOnlyByteSpan()
     {
-      return SpanExtension.CreateReadOnlySpan(ref Unsafe.As<ulong, byte>(ref Unsafe.AsRef(in source)), sizeof(ulong));
+      return MemoryMarshal.AsBytes(SpanExtension.CreateReadOnlySpan(in source));
     }
   }
 
@@ -536,7 +536,7 @@ public static class SbBitConverter
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public ReadOnlySpan<byte> AsReadOnlyByteSpan()
     {
-      return SpanExtension.CreateReadOnlySpan(ref Unsafe.As<float, byte>(ref Unsafe.AsRef(in source)), sizeof(float));
+      return MemoryMarshal.AsBytes(SpanExtension.CreateReadOnlySpan(in source));
     }
   }
 
@@ -596,7 +596,7 @@ public static class SbBitConverter
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public ReadOnlySpan<byte> AsReadOnlyByteSpan()
     {
-      return SpanExtension.CreateReadOnlySpan(ref Unsafe.As<double, byte>(ref Unsafe.AsRef(in source)), sizeof(double));
+      return MemoryMarshal.AsBytes(SpanExtension.CreateReadOnlySpan(in source));
     }
   }
 
@@ -647,7 +647,7 @@ public static class SbBitConverter
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public ReadOnlySpan<byte> AsReadOnlyByteSpan()
     {
-      return SpanExtension.CreateReadOnlySpan(ref Unsafe.As<T, byte>(ref source), Unsafe.SizeOf<T>());
+      return MemoryMarshal.AsBytes(SpanExtension.CreateReadOnlySpan(in source));
     }
   }
 
@@ -1261,9 +1261,9 @@ public static class SbBitConverter
     /// </summary>
     /// <returns></returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public ReadOnlySpan<Int128> AsReadOnlyByteSpan()
+    public ReadOnlySpan<byte> AsReadOnlyByteSpan()
     {
-      return SpanExtension.CreateReadOnlySpan(ref Unsafe.AsRef(in source), Unsafe.SizeOf<Int128>());
+      return MemoryMarshal.AsBytes(SpanExtension.CreateReadOnlySpan(in source, 1));
     }
   }
 
@@ -1314,9 +1314,9 @@ public static class SbBitConverter
     /// </summary>
     /// <returns></returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public ReadOnlySpan<UInt128> AsReadOnlyByteSpan()
+    public ReadOnlySpan<byte> AsReadOnlyByteSpan()
     {
-      return SpanExtension.CreateReadOnlySpan(ref Unsafe.AsRef(in source), Unsafe.SizeOf<UInt128>());
+      return MemoryMarshal.AsBytes(SpanExtension.CreateReadOnlySpan(in source, 1));
     }
   }
 

@@ -2,6 +2,7 @@
 using System.Runtime.CompilerServices;
 
 #else
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 #endif
 
@@ -21,7 +22,7 @@ public static class SpanExtension
   /// <param name="source"></param>
   /// <param name="length"></param>
   /// <returns></returns>
-  public static Span<T> CreateSpan<T>(scoped ref T source, int length) where T : unmanaged
+  public static Span<T> CreateSpan<T>(scoped ref T source, int length = 1) where T : unmanaged
   {
 #if NETSTANDARD2_0
     unsafe
@@ -40,15 +41,15 @@ public static class SpanExtension
   /// <param name="source"></param>
   /// <param name="length"></param>
   /// <returns></returns>
-  public static ReadOnlySpan<T> CreateReadOnlySpan<T>(scoped ref T source, int length) where T : unmanaged
+  public static ReadOnlySpan<T> CreateReadOnlySpan<T>(scoped in T source, int length = 1) where T : unmanaged
   {
 #if NETSTANDARD2_0
     unsafe
     {
-      return new ReadOnlySpan<T>(Unsafe.AsPointer(ref source), length);
+      return new ReadOnlySpan<T>(Unsafe.AsPointer(ref Unsafe.AsRef(in source)), length);
     }
 #else
-    return MemoryMarshal.CreateReadOnlySpan(ref source, length);
+    return MemoryMarshal.CreateReadOnlySpan(ref Unsafe.AsRef(in source), length);
 #endif
   }
 }
