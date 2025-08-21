@@ -10,44 +10,43 @@ namespace System.Collections.Generic;
 public static class QueueExtensions
 {
   /// <summary>
+  ///   尝试查看队列头部元素而不移除它
   /// </summary>
-  /// <param name="queue"></param>
-  /// <typeparam name="T"></typeparam>
-  extension<T>(Queue<T> queue)
+  /// <param name="queue">队列</param>
+  /// <param name="result">结果</param>
+  /// <typeparam name="T">元素类型</typeparam>
+  /// <returns>是否成功</returns>
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
+  public static bool TryPeek<T>(this Queue<T> queue, out T? result)
   {
-    /// <summary>
-    /// </summary>
-    /// <param name="result"></param>
-    /// <returns></returns>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public bool TryPeek(out T? result)
+    if (queue.Count > 0)
     {
-      if (queue.Count > 0)
-      {
-        result = queue.Peek();
-        return true;
-      }
-
-      result = default;
-      return false;
+      result = queue.Peek();
+      return true;
     }
 
-    /// <summary>
-    /// </summary>
-    /// <param name="result"></param>
-    /// <returns></returns>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public bool TryDequeue(out T? result)
-    {
-      if (queue.Count > 0)
-      {
-        result = queue.Dequeue();
-        return true;
-      }
+    result = default;
+    return false;
+  }
 
-      result = default;
-      return false;
+  /// <summary>
+  ///   尝试出队一个元素
+  /// </summary>
+  /// <param name="queue">队列</param>
+  /// <param name="result">结果</param>
+  /// <typeparam name="T">元素类型</typeparam>
+  /// <returns>是否成功</returns>
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
+  public static bool TryDequeue<T>(this Queue<T> queue, out T? result)
+  {
+    if (queue.Count > 0)
+    {
+      result = queue.Dequeue();
+      return true;
     }
+
+    result = default;
+    return false;
   }
 }
 #endif

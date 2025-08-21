@@ -10,44 +10,43 @@ namespace System.Collections.Generic;
 public static class StackExtensions
 {
   /// <summary>
+  ///   尝试查看栈顶元素而不移除它
   /// </summary>
-  /// <param name="stack"></param>
-  /// <typeparam name="T"></typeparam>
-  extension<T>(Stack<T> stack)
+  /// <param name="stack">栈</param>
+  /// <param name="result">结果</param>
+  /// <typeparam name="T">元素类型</typeparam>
+  /// <returns>是否成功</returns>
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
+  public static bool TryPeek<T>(this Stack<T> stack, out T? result)
   {
-    /// <summary>
-    /// </summary>
-    /// <param name="result"></param>
-    /// <returns></returns>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public bool TryPeek(out T? result)
+    if (stack.Count > 0)
     {
-      if (stack.Count > 0)
-      {
-        result = stack.Peek();
-        return true;
-      }
-
-      result = default;
-      return false;
+      result = stack.Peek();
+      return true;
     }
 
-    /// <summary>
-    /// </summary>
-    /// <param name="result"></param>
-    /// <returns></returns>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public bool TryPop(out T? result)
-    {
-      if (stack.Count > 0)
-      {
-        result = stack.Pop();
-        return true;
-      }
+    result = default;
+    return false;
+  }
 
-      result = default;
-      return false;
+  /// <summary>
+  ///   尝试弹出栈顶元素
+  /// </summary>
+  /// <param name="stack">栈</param>
+  /// <param name="result">结果</param>
+  /// <typeparam name="T">元素类型</typeparam>
+  /// <returns>是否成功</returns>
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
+  public static bool TryPop<T>(this Stack<T> stack, out T? result)
+  {
+    if (stack.Count > 0)
+    {
+      result = stack.Pop();
+      return true;
     }
+
+    result = default;
+    return false;
   }
 }
 #endif
