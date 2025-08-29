@@ -70,7 +70,7 @@ public class StringExtensionTests
     public void GetBytes_DefaultEncoding()
     {
       var s = "abc";
-      var bytes = s.GetBytes();
+      var bytes = s.EncodingToBytes();
       Assert.Equal(Encoding.Default.GetBytes(s), bytes);
     }
 
@@ -78,7 +78,7 @@ public class StringExtensionTests
     public void GetBytes_SpecifiedEncoding()
     {
       var s = "abc";
-      var bytes = s.GetBytes(Encoding.UTF8);
+      var bytes = s.EncodingToBytes(Encoding.UTF8);
       Assert.Equal(Encoding.UTF8.GetBytes(s), bytes);
     }
 }
