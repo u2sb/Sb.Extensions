@@ -18,7 +18,7 @@ public static class StringExtension
   ///   字符串拓展
   /// </summary>
   /// <param name="s">字符串</param>
-  extension(string? s)
+  extension(string s)
   {
     #region GetBytes
 
@@ -26,11 +26,11 @@ public static class StringExtension
     ///   将字符串转换为字节数组
     /// </summary>
     /// <returns>字节数组</returns>
-    public byte[] GetBytes(Encoding? encoding = null)
+    public byte[] EncodingToBytes(Encoding? encoding = null)
     {
       if (s.IsNullOrEmpty()) return [];
 
-      if (encoding == null) encoding = Encoding.Default;
+      encoding ??= Encoding.Default;
 
       return encoding.GetBytes(s ?? string.Empty);
     }

@@ -579,10 +579,10 @@ public readonly ref struct BitSpan
       remaining -= copyBits;
     }
 
-    if (bitCount % 8 != 0)
+    var validBits = bitCount & 0x07;
+    if (validBits != 0)
     {
-      var validBits = bitCount % 8;
-      var lastByte = bitCount / 8;
+      var lastByte = bitCount >> 3;
       destination[lastByte] &= (byte)(0xFF >> (8 - validBits));
     }
   }
@@ -808,6 +808,131 @@ public readonly ref struct ReadOnlyBitSpan
       return this;
     }
   }
+
+  #region 获取数据
+
+  /// <summary>
+  ///   获取指定偏移和长度的字节值。
+  /// </summary>
+  /// <param name="offset">起始位偏移</param>
+  /// <param name="length">位长度（默认8）</param>
+  /// <returns>对应的字节值</returns>
+  public byte GetByte(int offset, int length = 8)
+  {
+    return GetT<byte>(offset, length);
+  }
+
+  /// <summary>
+  ///   获取指定偏移和长度的 ushort 值。
+  /// </summary>
+  /// <param name="offset">起始位偏移</param>
+  /// <param name="length">位长度（默认16）</param>
+  /// <param name="useBigEndianMode">是否大端模式</param>
+  /// <returns>对应的 ushort 值</returns>
+  public ushort GetUInt16(int offset, int length = 16, bool useBigEndianMode = true)
+  {
+    return GetT<ushort>(offset, length, useBigEndianMode);
+  }
+
+  /// <summary>
+  ///   获取指定偏移和长度的 uint 值。
+  /// </summary>
+  /// <param name="offset">起始位偏移</param>
+  /// <param name="length">位长度（默认32）</param>
+  /// <param name="useBigEndianMode">是否大端模式</param>
+  /// <returns>对应的 uint 值</returns>
+  public uint GetUInt32(int offset, int length = 32, bool useBigEndianMode = true)
+  {
+    return GetT<uint>(offset, length, useBigEndianMode);
+  }
+
+  /// <summary>
+  ///   获取指定偏移和长度的 T 类型值。
+  /// </summary>
+  /// <typeparam name="T">目标类型</typeparam>
+  /// <param name="offset">起始位偏移</param>
+  /// <param name="length">位长度</param>
+  /// <param name="useBigEndianMode">是否大端模式</param>
+  /// <returns>对应的 T 类型值</returns>
+  public T GetT<T>(int offset, int length, bool useBigEndianMode = true) where T : unmanaged
+  {
+    Span<byte> span = stackalloc byte[Unsafe.SizeOf<T>()];
+    CopyTo(span, offset, length);
+    return span.ToT<T>(useBigEndianMode);
+  }
+
+  /// <summary>
+  ///   拷贝指定范围的位到目标字节数组。
+  /// </summary>
+  /// <param name="destination">目标字节数组</param>
+  /// <param name="bitOffset">起始位偏移</param>
+  /// <param name="bitCount">位数</param>
+  /// <exception cref="ArgumentOutOfRangeException">参数越界</exception>
+  /// <exception cref="ArgumentException">目标数组空间不足</exception>
+  public void CopyTo(Span<byte> destination, int bitOffset, int bitCount)
+  {
+    if (bitOffset < 0 || bitCount < 0)
+      BitSpanException.ThrowInvalidSliceArguments(bitOffset, bitCount, Length);
+    if (bitOffset + bitCount > Length)
+      BitSpanException.ThrowInvalidSliceArguments(bitOffset, bitCount, Length);
+    if (destination.Length * 8 < bitCount)
+      BitSpanException.ThrowDestinationTooShort(destination.Length * 8, bitCount);
+
+    destination.Clear();
+
+    var srcBit = _startBitOffset + bitOffset;
+    var dstBit = 0;
+    var remaining = bitCount;
+
+    while (remaining > 0)
+    {
+      var srcByte = srcBit >> 3;
+      var srcBitInByte = srcBit & 0x07;
+      var copyBits = Math.Min(8 - srcBitInByte, remaining);
+
+      var srcValue = (byte)((_span[srcByte] >> srcBitInByte) & (0xFF >> (8 - copyBits)));
+
+      var dstByte = dstBit >> 3;
+      var dstBitInByte = dstBit & 0x07;
+
+      if (dstBitInByte == 0 && copyBits == 8)
+      {
+        destination[dstByte] = srcValue;
+      }
+      else
+      {
+        var availableBits = 8 - dstBitInByte;
+        if (availableBits >= copyBits)
+        {
+          var mask = (byte)((0xFF >> (8 - copyBits)) << dstBitInByte);
+          destination[dstByte] = (byte)((destination[dstByte] & ~mask) | (srcValue << dstBitInByte));
+        }
+        else
+        {
+          // var lowMask = (byte)(0xFF >> (8 - availableBits));
+          destination[dstByte] |= (byte)(srcValue << dstBitInByte);
+
+          var highBits = copyBits - availableBits;
+          var highValue = (byte)(srcValue >> availableBits);
+          var highMask = (byte)(0xFF >> (8 - highBits));
+          destination[dstByte + 1] |= (byte)(highValue & highMask);
+        }
+      }
+
+      srcBit += copyBits;
+      dstBit += copyBits;
+      remaining -= copyBits;
+    }
+
+    var validBits = bitCount & 0x07;
+    if (validBits != 0)
+    {
+      var lastByte = bitCount >> 3;
+      destination[lastByte] &= (byte)(0xFF >> (8 - validBits));
+    }
+  }
+
+  #endregion
 }
 
 #region 异常处理
