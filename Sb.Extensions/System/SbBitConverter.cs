@@ -1,10 +1,10 @@
+using System;
 using System.Buffers;
 using System.Buffers.Binary;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
-// ReSharper disable once CheckNamespace
-namespace System;
+namespace Sb.Extensions.System;
 
 #region 大小端枚举
 
@@ -18,8 +18,7 @@ public enum BigAndSmallEndianEncodingMode : byte
   ///   小端模式
   /// </summary>
   DCBA = 0,
-
-
+  
   /// <summary>
   ///   大端模式
   /// </summary>
@@ -1227,7 +1226,7 @@ public static class SbBitConverter
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public Int128 WithEndianness(bool useBigEndianMode = false)
     {
-      return System.BitConverter.IsLittleEndian != useBigEndianMode
+      return BitConverter.IsLittleEndian != useBigEndianMode
         ? source
         : BinaryPrimitives.ReverseEndianness(source);
     }
@@ -1280,7 +1279,7 @@ public static class SbBitConverter
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public UInt128 WithEndianness(bool useBigEndianMode = false)
     {
-      return System.BitConverter.IsLittleEndian != useBigEndianMode
+      return BitConverter.IsLittleEndian != useBigEndianMode
         ? source
         : BinaryPrimitives.ReverseEndianness(source);
     }

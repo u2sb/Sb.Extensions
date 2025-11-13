@@ -1,8 +1,8 @@
 ﻿#if NETSTANDARD2_0
+using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 
-// ReSharper disable once CheckNamespace
-namespace System.Collections.Generic;
+namespace Sb.Extensions.System.Collections.Generic;
 
 /// <summary>
 ///   Queue 拓展

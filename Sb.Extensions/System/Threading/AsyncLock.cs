@@ -1,12 +1,13 @@
 ﻿// https://raw.githubusercontent.com/neosmart/AsyncLock/refs/heads/master/AsyncLock/AsyncLock.cs
 
+using System;
+using System.Threading;
 using System.Threading.Tasks;
 
 // ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable UnusedMember.Global
 
-// ReSharper disable once CheckNamespace
-namespace System.Threading;
+namespace Sb.Extensions.System.Threading;
 
 /// <summary>
 /// </summary>

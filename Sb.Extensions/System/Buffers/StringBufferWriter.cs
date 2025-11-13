@@ -1,8 +1,8 @@
+using System;
+using System.Buffers;
 using System.Diagnostics;
 
-// 命名空间不要改
-// ReSharper disable once CheckNamespace
-namespace System.Buffers;
+namespace Sb.Extensions.System.Buffers;
 
 /// <summary>
 /// </summary>

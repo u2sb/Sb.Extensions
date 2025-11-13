@@ -1,56 +1,56 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-    <PropertyGroup>
-        <TargetFrameworks>netstandard2.0;netstandard2.1;net6.0;net8.0;net10.0</TargetFrameworks>
-        <Nullable>enable</Nullable>
-        <LangVersion>preview</LangVersion>
-        <AssemblyName>Sb.Extensions</AssemblyName>
-        <PackageId>Sb.Extensions</PackageId>
-        <PackageProjectUrl>https://github.com/u2sb/Sb.Extensions.git</PackageProjectUrl>
-        <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
-        <Title>Sb.Extensions</Title>
-        <Authors>MonoLogueChi</Authors>
-        <Company>U2SB</Company>
-        <RepositoryUrl>https://github.com/u2sb/Sb.Extensions.git</RepositoryUrl>
-        <RepositoryType>git</RepositoryType>
-        <PackageIcon>avatar.png</PackageIcon>
-        <PackageReadmeFile>README.md</PackageReadmeFile>
-        <GenerateDocumentationFile>true</GenerateDocumentationFile>
-        <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
-        <Copyright>U2SB</Copyright>
-        <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
-        <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
-        <IncludeSymbols>true</IncludeSymbols>
-        <SymbolPackageFormat>snupkg</SymbolPackageFormat>
-    </PropertyGroup>
+  <PropertyGroup>
+    <TargetFrameworks>netstandard2.0;netstandard2.1;net6.0;net8.0;net10.0</TargetFrameworks>
+    <Nullable>enable</Nullable>
+    <LangVersion>preview</LangVersion>
+    <AssemblyName>Sb.Extensions</AssemblyName>
+    <PackageId>Sb.Extensions</PackageId>
+    <PackageProjectUrl>https://github.com/u2sb/Sb.Extensions.git</PackageProjectUrl>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    <Title>Sb.Extensions</Title>
+    <Authors>MonoLogueChi</Authors>
+    <Company>U2SB</Company>
+    <RepositoryUrl>https://github.com/u2sb/Sb.Extensions.git</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageIcon>avatar.png</PackageIcon>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+    <Copyright>U2SB</Copyright>
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+    <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+  </PropertyGroup>
 
-    <ItemGroup>
-	    <PackageReference Include="CommunityToolkit.HighPerformance" Version="8.4.0" />
-	    <PackageReference Include="ZLinq" Version="1.5.2" />
-    </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="CommunityToolkit.HighPerformance" Version="8.4.0"/>
+    <PackageReference Include="ZLinq" Version="1.5.4"/>
+  </ItemGroup>
 
-    <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.1'">
-        <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="6.1.2" />
-    </ItemGroup>
-    <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
-        <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="9.0.7" />
-        <PackageReference Include="Microsoft.Bcl.Memory" Version="9.0.7" />
-        <PackageReference Include="System.Buffers" Version="4.6.1" />
-        <PackageReference Include="System.Memory" Version="4.6.3" />
-        <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="6.1.2" />
-        <PackageReference Include="System.Threading.Tasks.Extensions" Version="4.6.3" />
-    </ItemGroup>
+  <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.1'">
+    <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="6.1.2"/>
+  </ItemGroup>
+  <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
+    <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="10.0.0"/>
+    <PackageReference Include="Microsoft.Bcl.Memory" Version="10.0.0"/>
+    <PackageReference Include="System.Buffers" Version="4.6.1"/>
+    <PackageReference Include="System.Memory" Version="4.6.3"/>
+    <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="6.1.2"/>
+    <PackageReference Include="System.Threading.Tasks.Extensions" Version="4.6.3"/>
+  </ItemGroup>
 
-    <ItemGroup>
-        <None Include="..\icons\avatar.png">
-            <Pack>True</Pack>
-            <PackagePath>\</PackagePath>
-        </None>
-        <None Include="..\README.md">
-            <Pack>True</Pack>
-            <PackagePath>\</PackagePath>
-        </None>
-    </ItemGroup>
+  <ItemGroup>
+    <None Include="..\icons\avatar.png">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+    <None Include="..\README.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+  </ItemGroup>
 
-    
+
 </Project>

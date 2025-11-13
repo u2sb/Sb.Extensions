@@ -1,12 +1,11 @@
+using System;
 using System.Buffers;
 using System.Runtime.CompilerServices;
 using CommunityToolkit.HighPerformance;
 
 #pragma warning disable CS1591 // 缺少对公共可见类型或成员的 XML 注释
 
-// 命名空间不要改
-// ReSharper disable once CheckNamespace
-namespace System;
+namespace Sb.Extensions.System;
 
 public readonly struct BitMemory : IEquatable<BitMemory>
 {

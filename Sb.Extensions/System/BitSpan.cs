@@ -1,10 +1,9 @@
+using System;
 using System.Collections;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
-// 命名空间不要改
-// ReSharper disable once CheckNamespace
-namespace System;
+namespace Sb.Extensions.System;
 
 /// <summary>
 ///   提供对字节缓冲区的位级别操作的结构体，支持切片、按位访问、批量操作等功能。

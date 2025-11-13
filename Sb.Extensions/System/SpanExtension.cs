@@ -1,15 +1,13 @@
-#if NETSTANDARD2_0
+using System;
 using System.Runtime.CompilerServices;
 
+#if NETSTANDARD2_0
+
 #else
-using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 #endif
 
-
-// 命名空间不要改
-// ReSharper disable once CheckNamespace
-namespace System;
+namespace Sb.Extensions.System;
 
 /// <summary>
 /// </summary>
