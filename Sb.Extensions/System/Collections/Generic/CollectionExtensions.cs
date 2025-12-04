@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
+
 #pragma warning disable CS1591 // 缺少对公共可见类型或成员的 XML 注释
 
 namespace Sb.Extensions.System.Collections.Generic;
@@ -18,18 +20,18 @@ public static class CollectionExtensions
     }
   }
 
-  extension<TKey, TValue>(SortedDictionary<TKey, TValue> dict)
+  extension<TKey, TValue>(SortedDictionary<TKey, TValue> dict) where TKey : notnull
   {
-    public bool Remove(TKey key, out TValue value)
+    public bool Remove(TKey key, [MaybeNullWhen(false)] out TValue value)
     {
       if (dict.TryGetValue(key, out value)) return dict.Remove(key);
       return false;
     }
   }
 
-  extension<TKey, TValue>(Dictionary<TKey, TValue> dict)
+  extension<TKey, TValue>(Dictionary<TKey, TValue> dict) where TKey : notnull
   {
-    public bool Remove(TKey key, out TValue value)
+    public bool Remove(TKey key, [MaybeNullWhen(false)] out TValue value)
     {
       if (dict.TryGetValue(key, out value)) return dict.Remove(key);
       return false;
@@ -37,7 +39,6 @@ public static class CollectionExtensions
   }
 
 #if !NET6_0_OR_GREATER
-
   extension<T>(IEnumerable<T> source)
   {
     public bool TryGetNonEnumeratedCount(out int count)
@@ -138,9 +139,7 @@ public static class CollectionExtensions
 }
 
 #if !NET5_0_OR_GREATER
-
 public interface IReadOnlySet<out T> : IEnumerable<T>, IReadOnlyCollection<T>
 {
 }
-
 #endif

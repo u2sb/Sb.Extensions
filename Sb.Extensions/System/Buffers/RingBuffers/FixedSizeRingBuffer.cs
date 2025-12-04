@@ -8,24 +8,24 @@ namespace Sb.Extensions.System.Buffers.RingBuffers;
 
 public class FixedSizeRingBuffer<T> : IReadOnlyList<T>
 {
-  private readonly RingBuffer<T> buffer;
+  private readonly RingBuffer<T> _buffer;
 
   public FixedSizeRingBuffer(int capacity)
   {
     if (capacity <= 0) throw new ArgumentOutOfRangeException(nameof(capacity));
     Capacity = capacity;
-    buffer = new RingBuffer<T>(capacity);
+    _buffer = new RingBuffer<T>(capacity);
   }
 
   public int Capacity { get; }
 
-  public int Count => buffer.Count;
+  public int Count => _buffer.Count;
 
-  public T this[int index] => buffer[index];
+  public T this[int index] => _buffer[index];
 
   public IEnumerator<T> GetEnumerator()
   {
-    return buffer.GetEnumerator();
+    return _buffer.GetEnumerator();
   }
 
   IEnumerator IEnumerable.GetEnumerator()
@@ -35,9 +35,9 @@ public class FixedSizeRingBuffer<T> : IReadOnlyList<T>
 
   public void Add(T item)
   {
-    if (buffer.Count == Capacity)
-      buffer.RemoveFirst();
-    buffer.AddLast(item);
+    if (_buffer.Count == Capacity)
+      _buffer.RemoveFirst();
+    _buffer.AddLast(item);
   }
 
   public void AddRange(ReadOnlySpan<T> items)
@@ -48,31 +48,31 @@ public class FixedSizeRingBuffer<T> : IReadOnlyList<T>
 
   public T RemoveFirst()
   {
-    return buffer.RemoveFirst();
+    return _buffer.RemoveFirst();
   }
 
   public void RemoveFirst(int count)
   {
-    buffer.RemoveFirst(count);
+    _buffer.RemoveFirst(count);
   }
 
   public T RemoveLast()
   {
-    return buffer.RemoveLast();
+    return _buffer.RemoveLast();
   }
 
   public void RemoveLast(int count)
   {
-    buffer.RemoveLast(count);
+    _buffer.RemoveLast(count);
   }
 
   public T[] ToArray()
   {
-    return buffer.ToArray();
+    return _buffer.ToArray();
   }
   
   public RingBufferSpan<T> GetSpan()
   {
-    return buffer.GetSpan();
+    return _buffer.GetSpan();
   }
 }
