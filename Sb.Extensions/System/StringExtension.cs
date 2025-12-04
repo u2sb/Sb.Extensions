@@ -1,5 +1,7 @@
 // ReSharper disable RedundantUsingDirective
 
+using System;
+using System.Globalization;
 using System.Runtime.CompilerServices;
 using System.Text;
 
@@ -14,7 +16,7 @@ public static class StringExtension
   ///   字符串拓展
   /// </summary>
   /// <param name="s">字符串</param>
-  extension(string s)
+  extension(string? s)
   {
     #region GetBytes
 
@@ -38,213 +40,263 @@ public static class StringExtension
     /// <summary>
     ///   判断字符串是否为 byte
     /// </summary>
+    /// <param name="styles"></param>
+    /// <param name="provider"></param>
     /// <returns>判断结果</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public bool IsByte()
+    public bool IsByte(NumberStyles styles = NumberStyles.Integer, IFormatProvider? provider = null)
     {
-      return byte.TryParse(s, out _);
+      return byte.TryParse(s, styles, provider, out _);
     }
 
     /// <summary>
     ///   尝试将字符串转换为 byte
     /// </summary>
     /// <param name="result">转换结果</param>
+    /// <param name="styles"></param>
+    /// <param name="provider"></param>
     /// <returns>是否转换成功</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public bool TryParseToByte(out byte result)
+    public bool TryParseToByte(out byte result, NumberStyles styles = NumberStyles.Integer,
+      IFormatProvider? provider = null)
     {
-      return byte.TryParse(s, out result);
+      return byte.TryParse(s, styles, provider, out result);
     }
 
     /// <summary>
     ///   判断字符串是否为 sbyte
     /// </summary>
+    /// <param name="styles"></param>
+    /// <param name="provider"></param>
     /// <returns>判断结果</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public bool IsSByte()
+    public bool IsSByte(NumberStyles styles = NumberStyles.Integer, IFormatProvider? provider = null)
     {
-      return sbyte.TryParse(s, out _);
+      return sbyte.TryParse(s, styles, provider, out _);
     }
 
     /// <summary>
     ///   尝试将字符串转换为 sbyte
     /// </summary>
     /// <param name="result">转换结果</param>
+    /// <param name="styles"></param>
+    /// <param name="provider"></param>
     /// <returns>是否转换成功</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public bool TryParseToSByte(out sbyte result)
+    public bool TryParseToSByte(out sbyte result, NumberStyles styles = NumberStyles.Integer,
+      IFormatProvider? provider = null)
     {
-      return sbyte.TryParse(s, out result);
+      return sbyte.TryParse(s, styles, provider, out result);
     }
 
     /// <summary>
     ///   判断字符串是否为 ushort
     /// </summary>
+    /// <param name="styles"></param>
+    /// <param name="provider"></param>
     /// <returns>判断结果</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public bool IsInt16()
+    public bool IsInt16(NumberStyles styles = NumberStyles.Integer, IFormatProvider? provider = null)
     {
-      return short.TryParse(s, out _);
+      return short.TryParse(s, styles, provider, out _);
     }
 
     /// <summary>
     ///   尝试将字符串转换为 short
     /// </summary>
     /// <param name="result">转换结果</param>
+    /// <param name="styles"></param>
+    /// <param name="provider"></param>
     /// <returns>是否转换成功</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public bool TryParseToInt16(out short result)
+    public bool TryParseToInt16(out short result, NumberStyles styles = NumberStyles.Integer,
+      IFormatProvider? provider = null)
     {
-      return short.TryParse(s, out result);
+      return short.TryParse(s, styles, provider, out result);
     }
 
 
     /// <summary>
     ///   判断字符串是否为 ushort
     /// </summary>
+    /// <param name="styles"></param>
+    /// <param name="provider"></param>
     /// <returns>判断结果</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public bool IsUInt16()
+    public bool IsUInt16(NumberStyles styles = NumberStyles.Integer, IFormatProvider? provider = null)
     {
-      return ushort.TryParse(s, out _);
+      return ushort.TryParse(s, styles, provider, out _);
     }
 
     /// <summary>
     ///   尝试将字符串转换为 ushort
     /// </summary>
     /// <param name="result">转换结果</param>
+    /// <param name="styles"></param>
+    /// <param name="provider"></param>
     /// <returns>是否转换成功</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public bool TryParseToUInt16(out ushort result)
+    public bool TryParseToUInt16(out ushort result, NumberStyles styles = NumberStyles.Integer,
+      IFormatProvider? provider = null)
     {
-      return ushort.TryParse(s, out result);
+      return ushort.TryParse(s, styles, provider, out result);
     }
 
 
     /// <summary>
     ///   判断字符串是否为 int
     /// </summary>
+    /// <param name="styles"></param>
+    /// <param name="provider"></param>
     /// <returns>判断结果</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public bool IsInt32()
+    public bool IsInt32(NumberStyles styles = NumberStyles.Integer, IFormatProvider? provider = null)
     {
-      return int.TryParse(s, out _);
+      return int.TryParse(s, styles, provider, out _);
     }
 
     /// <summary>
     ///   尝试将字符串转换为 int
     /// </summary>
     /// <param name="result">转换结果</param>
+    /// <param name="styles"></param>
+    /// <param name="provider"></param>
     /// <returns>是否转换成功</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public bool TryParseToInt32(out int result)
+    public bool TryParseToInt32(out int result, NumberStyles styles = NumberStyles.Integer,
+      IFormatProvider? provider = null)
     {
-      return int.TryParse(s, out result);
+      return int.TryParse(s, styles, provider, out result);
     }
 
     /// <summary>
     ///   判断字符串是否为 uint
     /// </summary>
+    /// <param name="styles"></param>
+    /// <param name="provider"></param>
     /// <returns>判断结果</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public bool IsUInt32()
+    public bool IsUInt32(NumberStyles styles = NumberStyles.Integer, IFormatProvider? provider = null)
     {
-      return uint.TryParse(s, out _);
+      return uint.TryParse(s, styles, provider, out _);
     }
 
     /// <summary>
     ///   尝试将字符串转换为 uint
     /// </summary>
     /// <param name="result">转换结果</param>
+    /// <param name="styles"></param>
+    /// <param name="provider"></param>
     /// <returns>是否转换成功</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public bool TryParseToUInt32(out uint result)
+    public bool TryParseToUInt32(out uint result, NumberStyles styles = NumberStyles.Integer,
+      IFormatProvider? provider = null)
     {
-      return uint.TryParse(s, out result);
+      return uint.TryParse(s, styles, provider, out result);
     }
 
     /// <summary>
     ///   判断字符串是否为 long
     /// </summary>
+    /// <param name="styles"></param>
+    /// <param name="provider"></param>
     /// <returns>判断结果</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public bool IsInt64()
+    public bool IsInt64(NumberStyles styles = NumberStyles.Integer, IFormatProvider? provider = null)
     {
-      return long.TryParse(s, out _);
+      return long.TryParse(s, styles, provider, out _);
     }
 
     /// <summary>
     ///   尝试将字符串转换为 long
     /// </summary>
     /// <param name="result">转换结果</param>
+    /// <param name="styles"></param>
+    /// <param name="provider"></param>
     /// <returns>是否转换成功</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public bool TryParseToInt64(out long result)
+    public bool TryParseToInt64(out long result, NumberStyles styles = NumberStyles.Integer,
+      IFormatProvider? provider = null)
     {
-      return long.TryParse(s, out result);
+      return long.TryParse(s, styles, provider, out result);
     }
 
     /// <summary>
     ///   判断字符串是否为 ulong
     /// </summary>
+    /// <param name="styles"></param>
+    /// <param name="provider"></param>
     /// <returns>判断结果</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public bool IsUInt64()
+    public bool IsUInt64(NumberStyles styles = NumberStyles.Integer, IFormatProvider? provider = null)
     {
-      return ulong.TryParse(s, out _);
+      return ulong.TryParse(s, styles, provider, out _);
     }
 
     /// <summary>
     ///   尝试将字符串转换为 ulong
     /// </summary>
     /// <param name="result">转换结果</param>
+    /// <param name="styles"></param>
+    /// <param name="provider"></param>
     /// <returns>是否转换成功</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public bool TryParseToUInt64(out ulong result)
+    public bool TryParseToUInt64(out ulong result, NumberStyles styles = NumberStyles.Integer,
+      IFormatProvider? provider = null)
     {
-      return ulong.TryParse(s, out result);
+      return ulong.TryParse(s, styles, provider, out result);
     }
 
     /// <summary>
     ///   判断字符串是否为 float
     /// </summary>
+    /// <param name="styles"></param>
+    /// <param name="provider"></param>
     /// <returns>判断结果</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public bool IsFloat()
+    public bool IsFloat(NumberStyles styles = NumberStyles.Integer, IFormatProvider? provider = null)
     {
-      return float.TryParse(s, out _);
+      return float.TryParse(s, styles, provider, out _);
     }
 
     /// <summary>
     ///   尝试将字符串转换为 float
     /// </summary>
     /// <param name="result">转换结果</param>
+    /// <param name="styles"></param>
+    /// <param name="provider"></param>
     /// <returns>是否转换成功</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public bool TryParseToFloat(out float result)
+    public bool TryParseToFloat(out float result, NumberStyles styles = NumberStyles.Integer,
+      IFormatProvider? provider = null)
     {
-      return float.TryParse(s, out result);
+      return float.TryParse(s, styles, provider, out result);
     }
 
     /// <summary>
     ///   判断字符串是否为 double
     /// </summary>
+    /// <param name="styles"></param>
+    /// <param name="provider"></param>
     /// <returns>判断结果</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public bool IsDouble()
+    public bool IsDouble(NumberStyles styles = NumberStyles.Integer, IFormatProvider? provider = null)
     {
-      return double.TryParse(s, out _);
+      return double.TryParse(s, styles, provider, out _);
     }
 
     /// <summary>
     ///   尝试将字符串转换为 double
     /// </summary>
     /// <param name="result">转换结果</param>
+    /// <param name="styles"></param>
+    /// <param name="provider"></param>
     /// <returns>是否转换成功</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public bool TryParseToDouble(out double result)
+    public bool TryParseToDouble(out double result, NumberStyles styles = NumberStyles.Integer,
+      IFormatProvider? provider = null)
     {
-      return double.TryParse(s, out result);
+      return double.TryParse(s, styles, provider, out result);
     }
 
     #endregion
