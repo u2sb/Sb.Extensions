@@ -71,8 +71,13 @@ public class FixedSizeRingBuffer<T> : IReadOnlyList<T>
     return _buffer.ToArray();
   }
   
-  public RingBufferSpan<T> GetSpan()
+  public RingBufferSpan<T> GetWrittenSpan()
   {
-    return _buffer.GetSpan();
+    return _buffer.GetWrittenSpan();
+  }
+  
+  public RingBufferSpan<T> GetWritableSpan()
+  {
+    return _buffer.GetWritableSpan();
   }
 }
