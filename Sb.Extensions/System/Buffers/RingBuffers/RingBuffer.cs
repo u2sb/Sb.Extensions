@@ -159,6 +159,27 @@ public class RingBuffer<T> : IList<T>, IReadOnlyList<T>
     return size;
   }
 
+  public void MoveEnd(int n)
+  {
+    if (n < 0 || Count + n > _buffer.Length)
+      throw new ArgumentOutOfRangeException(nameof(n));
+    Count += n;
+  }
+
+  public void MoveHead(int n)
+  {
+    if (n < 0 || n > Count)
+      throw new ArgumentOutOfRangeException(nameof(n));
+    if (n == 0) return;
+    var start = _head & _mask;
+    var firstLen = Math.Min(_buffer.Length - start, n);
+    _buffer.AsSpan(start, firstLen).Clear();
+    if (n > firstLen)
+      _buffer.AsSpan(0, n - firstLen).Clear();
+    _head = (_head + n) & _mask;
+    Count -= n;
+  }
+
   public void AddLast(T item)
   {
     if (Count == _buffer.Length) EnsureCapacity();
@@ -197,7 +218,6 @@ public class RingBuffer<T> : IList<T>, IReadOnlyList<T>
 
     var index = (_head + Count - 1) & _mask;
     var v = _buffer[index];
-    _buffer[index] = default!;
     Count--;
     return v;
   }
@@ -206,11 +226,6 @@ public class RingBuffer<T> : IList<T>, IReadOnlyList<T>
   {
     if (n < 0 || n > Count) throw new ArgumentOutOfRangeException();
     if (n == 0) return;
-    var tail = (_head + Count - n) & _mask;
-    var firstLen = Math.Min(_buffer.Length - tail, n);
-    _buffer.AsSpan(tail, firstLen).Clear();
-    if (n > firstLen)
-      _buffer.AsSpan(0, n - firstLen).Clear();
     Count -= n;
   }
 
@@ -220,8 +235,7 @@ public class RingBuffer<T> : IList<T>, IReadOnlyList<T>
 
     var index = _head & _mask;
     var v = _buffer[index];
-    _buffer[index] = default!;
-    _head = _head + 1;
+    _head += 1;
     Count--;
     return v;
   }
@@ -230,11 +244,6 @@ public class RingBuffer<T> : IList<T>, IReadOnlyList<T>
   {
     if (n < 0 || n > Count) throw new ArgumentOutOfRangeException();
     if (n == 0) return;
-    var start = _head & _mask;
-    var firstLen = Math.Min(_buffer.Length - start, n);
-    _buffer.AsSpan(start, firstLen).Clear();
-    if (n > firstLen)
-      _buffer.AsSpan(0, n - firstLen).Clear();
     _head = (_head + n) & _mask;
     Count -= n;
   }

@@ -32,6 +32,16 @@ public class FixedSizeRingBuffer<T> : IReadOnlyList<T>
   {
     return GetEnumerator();
   }
+  
+  public void MoveEnd(int n)
+  {
+    _buffer.MoveEnd(n);
+  }
+
+  public void MoveHead(int n)
+  {
+    _buffer.MoveHead(n);
+  }
 
   public void Add(T item)
   {
