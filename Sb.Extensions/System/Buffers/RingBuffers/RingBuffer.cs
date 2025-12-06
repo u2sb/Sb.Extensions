@@ -1,10 +1,12 @@
-﻿// https://github.com/Cysharp/ObservableCollections/blob/master/src/ObservableCollections/RingBuffer.cs
+// https://github.com/Cysharp/ObservableCollections/blob/master/src/ObservableCollections/RingBuffer.cs
 
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using CommunityToolkit.HighPerformance;
 using Sb.Extensions.System.Collections.Generic;
+
 #pragma warning disable CS1591 // 缺少对公共可见类型或成员的 XML 注释
 
 namespace Sb.Extensions.System.Buffers.RingBuffers;
@@ -47,6 +49,54 @@ public class RingBuffer<T> : IList<T>, IReadOnlyList<T>
     _head = 0;
     Count = i;
     _mask = _buffer.Length - 1;
+  }
+
+  public RingBufferSpan<T> WrittenSpan
+  {
+    get
+    {
+      if (Count == 0) return new RingBufferSpan<T>(Span<T>.Empty, Span<T>.Empty, 0);
+
+      var start = _head & _mask;
+      var end = (_head + Count) & _mask;
+
+      if (end > start)
+      {
+        var first = _buffer.AsSpan(start, Count);
+        var second = Span<T>.Empty;
+        return new RingBufferSpan<T>(first, second, Count);
+      }
+      else
+      {
+        var first = _buffer.AsSpan(start, _buffer.Length - start);
+        var second = _buffer.AsSpan(0, end);
+        return new RingBufferSpan<T>(first, second, Count);
+      }
+    }
+  }
+
+  public RingBufferSpan<T> WritableSpan
+  {
+    get
+    {
+      var writable = _buffer.Length - Count;
+      if (writable == 0) return new RingBufferSpan<T>(Span<T>.Empty, Span<T>.Empty, 0);
+
+      var tail = (_head + Count) & _mask;
+      if (tail + writable <= _buffer.Length)
+      {
+        var first = _buffer.AsSpan(tail, writable);
+        var second = Span<T>.Empty;
+        return new RingBufferSpan<T>(first, second, writable);
+      }
+      else
+      {
+        var firstLen = _buffer.Length - tail;
+        var first = _buffer.AsSpan(tail, firstLen);
+        var second = _buffer.AsSpan(0, writable - firstLen);
+        return new RingBufferSpan<T>(first, second, writable);
+      }
+    }
   }
 
   public T this[int index]
@@ -106,7 +156,7 @@ public class RingBuffer<T> : IList<T>, IReadOnlyList<T>
 
   public void CopyTo(T[] array, int arrayIndex)
   {
-    var span = this.WrittenSpan;
+    var span = WrittenSpan;
     var dest = array.AsSpan(arrayIndex);
     span.CopyTo(dest);
   }
@@ -141,7 +191,22 @@ public class RingBuffer<T> : IList<T>, IReadOnlyList<T>
 
   IEnumerator IEnumerable.GetEnumerator()
   {
-    return ((IEnumerable<T>)this).GetEnumerator();
+    return GetEnumerator();
+  }
+
+  public void AddRange(ReadOnlySpan<T> collection)
+  {
+    AddLastRange(collection);
+  }
+
+  public void AddRange(List<T> collection)
+  {
+    AddLastRange(collection.AsSpan());
+  }
+
+  public void AddRange(IEnumerable<T> collection)
+  {
+    AddLastRange(collection.ToArray());
   }
 
   private static int CalculateCapacity(int size)
@@ -261,60 +326,6 @@ public class RingBuffer<T> : IList<T>, IReadOnlyList<T>
     _mask = newBuffer.Length - 1;
   }
 
-  public RingBufferSpan<T> WrittenSpan
-  {
-    get
-    {
-      if (Count == 0)
-      {
-        return new RingBufferSpan<T>(Span<T>.Empty, Span<T>.Empty, 0);
-      }
-
-      var start = _head & _mask;
-      var end = (_head + Count) & _mask;
-
-      if (end > start)
-      {
-        var first = _buffer.AsSpan(start, Count);
-        var second = Span<T>.Empty;
-        return new RingBufferSpan<T>(first, second, Count);
-      }
-      else
-      {
-        var first = _buffer.AsSpan(start, _buffer.Length - start);
-        var second = _buffer.AsSpan(0, end);
-        return new RingBufferSpan<T>(first, second, Count);
-      }
-    }
-  }
-
-  public RingBufferSpan<T> WritableSpan
-  {
-    get
-    {
-      var writable = _buffer.Length - Count;
-      if (writable == 0)
-      {
-        return new RingBufferSpan<T>(Span<T>.Empty, Span<T>.Empty, 0);
-      }
-
-      var tail = (_head + Count) & _mask;
-      if (tail + writable <= _buffer.Length)
-      {
-        var first = _buffer.AsSpan(tail, writable);
-        var second = Span<T>.Empty;
-        return new RingBufferSpan<T>(first, second, writable);
-      }
-      else
-      {
-        var firstLen = _buffer.Length - tail;
-        var first = _buffer.AsSpan(tail, firstLen);
-        var second = _buffer.AsSpan(0, writable - firstLen);
-        return new RingBufferSpan<T>(first, second, writable);
-      }
-    }
-  }
-
   public IEnumerable<T> Reverse()
   {
     if (Count == 0) yield break;
@@ -380,9 +391,9 @@ public readonly ref struct RingBufferSpan<T>
   public readonly Span<T> First;
   public readonly Span<T> Second;
   public readonly int Length;
-  
+
   public int Count => Length;
-  
+
   public bool IsEmpty => Length == 0;
 
   internal RingBufferSpan(Span<T> first, Span<T> second, int length)
@@ -396,15 +407,9 @@ public readonly ref struct RingBufferSpan<T>
   {
     get
     {
-      if (index < 0 || index >= Length)
-      {
-        throw new ArgumentOutOfRangeException(nameof(index));
-      }
+      if (index < 0 || index >= Length) throw new ArgumentOutOfRangeException(nameof(index));
 
-      if (index < First.Length)
-      {
-        return ref First[index];
-      }
+      if (index < First.Length) return ref First[index];
 
       return ref Second[index - First.Length];
     }
@@ -412,15 +417,9 @@ public readonly ref struct RingBufferSpan<T>
 
   public void CopyTo(Span<T> destination)
   {
-    if (!First.IsEmpty)
-    {
-      First.CopyTo(destination);
-    }
+    if (!First.IsEmpty) First.CopyTo(destination);
 
-    if (!Second.IsEmpty)
-    {
-      Second.CopyTo(destination[First.Length..]);
-    }
+    if (!Second.IsEmpty) Second.CopyTo(destination[First.Length..]);
   }
 
   public void CopyFrom(ReadOnlySpan<T> source)
@@ -435,13 +434,10 @@ public readonly ref struct RingBufferSpan<T>
       source.Slice(First.Length, source.Length - First.Length).CopyTo(Second);
     }
   }
-  
+
   public T[] ToArray()
   {
-    if (Length == 0)
-    {
-      return [];
-    }
+    if (Length == 0) return [];
 
     var result = new T[Length];
     CopyTo(result);
@@ -451,10 +447,10 @@ public readonly ref struct RingBufferSpan<T>
   public RingBufferSpan<T> Slice(int start)
   {
     var length = Length - start;
-    
+
     return Slice(start, length);
   }
-  
+
   public RingBufferSpan<T> Slice(int start, int length)
   {
     if (start < 0 || length < 0 || start + length > Length)
