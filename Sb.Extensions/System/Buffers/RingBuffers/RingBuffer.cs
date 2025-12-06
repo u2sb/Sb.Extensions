@@ -429,22 +429,7 @@ public readonly ref struct RingBufferSpan<T>
   {
     var length = Length - start;
     
-    if (start < 0 || length < 0 || start + length > Length)
-      throw new ArgumentOutOfRangeException();
-
-    if (start < First.Length)
-    {
-      var firstSliceLen = Math.Min(length, First.Length - start);
-      var first = First.Slice(start, firstSliceLen);
-      var second = length > firstSliceLen ? Second[..(length - firstSliceLen)] : Span<T>.Empty;
-      return new RingBufferSpan<T>(first, second, length);
-    }
-    else
-    {
-      var secondStart = start - First.Length;
-      var first = Second.Slice(secondStart, length);
-      return new RingBufferSpan<T>(first, Span<T>.Empty, length);
-    }
+    return Slice(start, length);
   }
   
   public RingBufferSpan<T> Slice(int start, int length)
