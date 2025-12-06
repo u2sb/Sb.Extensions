@@ -382,6 +382,24 @@ public readonly ref struct RingBufferSpan<T>
     Second = second;
     Length = length;
   }
+
+  public ref T this[int index]
+  {
+    get
+    {
+      if (index < 0 || index >= Length)
+      {
+        throw new ArgumentOutOfRangeException(nameof(index));
+      }
+
+      if (index < First.Length)
+      {
+        return ref First[index];
+      }
+
+      return ref Second[index - First.Length];
+    }
+  }
   
   public void CopyTo(Span<T> destination)
   {
