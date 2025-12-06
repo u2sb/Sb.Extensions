@@ -106,7 +106,7 @@ public class RingBuffer<T> : IList<T>, IReadOnlyList<T>
 
   public void CopyTo(T[] array, int arrayIndex)
   {
-    var span = this.WritableSpan;
+    var span = this.WrittenSpan;
     var dest = array.AsSpan(arrayIndex);
     span.CopyTo(dest);
   }
