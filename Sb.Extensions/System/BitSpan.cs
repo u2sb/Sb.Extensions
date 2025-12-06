@@ -94,33 +94,18 @@ public readonly ref struct BitSpan
   }
 
   /// <summary>
-  ///   获取指定范围的位段切片。
-  /// </summary>
-  /// <param name="range">位范围</param>
-  /// <returns>位段切片</returns>
-  public BitSpan this[Range range]
-  {
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    get
-    {
-      var (start, length) = range.GetOffsetAndLength(Length);
-      return Slice(start, length);
-    }
-  }
-
-  /// <summary>
   ///   获取指定起始位和长度的位段切片。
   /// </summary>
-  /// <param name="startBit">起始位</param>
+  /// <param name="start">起始位</param>
   /// <param name="length">长度</param>
   /// <returns>位段切片</returns>
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
-  public BitSpan Slice(int startBit, int length)
+  public BitSpan Slice(int start, int length)
   {
-    if (startBit < 0 || length < 0 || startBit + length > Length)
-      BitSpanException.ThrowInvalidSliceArguments(startBit, length, Length);
+    if (start < 0 || length < 0 || start + length > Length)
+      BitSpanException.ThrowInvalidSliceArguments(start, length, Length);
 
-    var newStartBitOffset = _startBitOffset + startBit;
+    var newStartBitOffset = _startBitOffset + start;
     var startByte = newStartBitOffset >> 3;
     var newBitOffset = newStartBitOffset & 7;
 
@@ -669,28 +654,15 @@ public readonly ref struct ReadOnlyBitSpan
   }
 
   /// <summary>
-  ///   按范围切片
-  /// </summary>
-  public ReadOnlyBitSpan this[Range range]
-  {
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    get
-    {
-      var (start, length) = range.GetOffsetAndLength(Length);
-      return Slice(start, length);
-    }
-  }
-
-  /// <summary>
   ///   切片
   /// </summary>
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
-  public ReadOnlyBitSpan Slice(int startBit, int length)
+  public ReadOnlyBitSpan Slice(int start, int length)
   {
-    if (startBit < 0 || length < 0 || startBit + length > Length)
-      BitSpanException.ThrowInvalidSliceArguments(startBit, length, Length);
+    if (start < 0 || length < 0 || start + length > Length)
+      BitSpanException.ThrowInvalidSliceArguments(start, length, Length);
 
-    var newStartBitOffset = _startBitOffset + startBit;
+    var newStartBitOffset = _startBitOffset + start;
     var startByte = newStartBitOffset >> 3;
     var newBitOffset = newStartBitOffset & 7;
 

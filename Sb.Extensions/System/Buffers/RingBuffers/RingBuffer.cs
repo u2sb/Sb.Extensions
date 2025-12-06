@@ -366,22 +366,26 @@ public class RingBuffer<T> : IList<T>, IReadOnlyList<T>
   }
 }
 
-public ref struct RingBufferSpan<T>
+public readonly ref struct RingBufferSpan<T>
 {
   public readonly Span<T> First;
   public readonly Span<T> Second;
-  public readonly int Count;
+  public readonly int Length;
+  
+  public int Count => Length;
+  
+  public bool IsEmpty => this.Length == 0;
 
-  internal RingBufferSpan(Span<T> first, Span<T> second, int count)
+  internal RingBufferSpan(Span<T> first, Span<T> second, int length)
   {
     First = first;
     Second = second;
-    Count = count;
+    Length = length;
   }
   
   public void CopyTo(Span<T> destination)
   {
-    if (destination.Length < Count)
+    if (destination.Length < Length)
       throw new ArgumentException("目标空间不足");
     if (!First.IsEmpty)
     {
@@ -396,11 +400,11 @@ public ref struct RingBufferSpan<T>
 
   public void CopyFrom(ReadOnlySpan<T> source)
   {
-    if (source.Length < Count)
+    if (source.Length < Length)
       throw new ArgumentException("源数据不足");
-    if (First.Length >= Count)
+    if (First.Length >= Length)
     {
-      source[..Count].CopyTo(First);
+      source[..Length].CopyTo(First);
     }
     else
     {
@@ -408,17 +412,51 @@ public ref struct RingBufferSpan<T>
       source.Slice(First.Length, Second.Length).CopyTo(Second);
     }
   }
-
-  public RingBufferSpan<T> Slice(int start, int length)
+  
+  public T[] ToArray()
   {
-    if (start < 0 || length < 0 || start + length > Count)
+    if (Length == 0)
+    {
+      return [];
+    }
+
+    var result = new T[Length];
+    CopyTo(result);
+    return result;
+  }
+
+  public RingBufferSpan<T> Slice(int start)
+  {
+    var length = Length - start;
+    
+    if (start < 0 || length < 0 || start + length > Length)
       throw new ArgumentOutOfRangeException();
 
     if (start < First.Length)
     {
       var firstSliceLen = Math.Min(length, First.Length - start);
       var first = First.Slice(start, firstSliceLen);
-      var second = length > firstSliceLen ? Second.Slice(0, length - firstSliceLen) : Second.Slice(0, 0);
+      var second = length > firstSliceLen ? Second[..(length - firstSliceLen)] : Span<T>.Empty;
+      return new RingBufferSpan<T>(first, second, length);
+    }
+    else
+    {
+      var secondStart = start - First.Length;
+      var first = Second.Slice(secondStart, length);
+      return new RingBufferSpan<T>(first, Span<T>.Empty, length);
+    }
+  }
+  
+  public RingBufferSpan<T> Slice(int start, int length)
+  {
+    if (start < 0 || length < 0 || start + length > Length)
+      throw new ArgumentOutOfRangeException();
+
+    if (start < First.Length)
+    {
+      var firstSliceLen = Math.Min(length, First.Length - start);
+      var first = First.Slice(start, firstSliceLen);
+      var second = length > firstSliceLen ? Second[..(length - firstSliceLen)] : Span<T>.Empty;
       return new RingBufferSpan<T>(first, second, length);
     }
     else
