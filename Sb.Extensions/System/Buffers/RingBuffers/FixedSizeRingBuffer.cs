@@ -12,12 +12,20 @@ public class FixedSizeRingBuffer<T> : IReadOnlyList<T>
 
   public FixedSizeRingBuffer(int capacity)
   {
-    if (capacity <= 0) throw new ArgumentOutOfRangeException(nameof(capacity));
+    if (capacity <= 0)
+    {
+      throw new ArgumentOutOfRangeException(nameof(capacity));
+    }
+
     Capacity = capacity;
     _buffer = new RingBuffer<T>(capacity);
   }
 
   public int Capacity { get; }
+
+  public RingBufferSpan<T> WrittenSpan => _buffer.WrittenSpan;
+
+  public RingBufferSpan<T> WritableSpan => _buffer.WritableSpan;
 
   public int Count => _buffer.Count;
 
@@ -32,7 +40,7 @@ public class FixedSizeRingBuffer<T> : IReadOnlyList<T>
   {
     return GetEnumerator();
   }
-  
+
   public void MoveEnd(int n)
   {
     _buffer.MoveEnd(n);
@@ -46,14 +54,19 @@ public class FixedSizeRingBuffer<T> : IReadOnlyList<T>
   public void Add(T item)
   {
     if (_buffer.Count == Capacity)
+    {
       _buffer.RemoveFirst();
+    }
+
     _buffer.AddLast(item);
   }
 
   public void AddRange(ReadOnlySpan<T> items)
   {
     foreach (var item in items)
+    {
       Add(item);
+    }
   }
 
   public T RemoveFirst()
@@ -79,15 +92,5 @@ public class FixedSizeRingBuffer<T> : IReadOnlyList<T>
   public T[] ToArray()
   {
     return _buffer.ToArray();
-  }
-  
-  public RingBufferSpan<T> GetWrittenSpan()
-  {
-    return _buffer.GetWrittenSpan();
-  }
-  
-  public RingBufferSpan<T> GetWritableSpan()
-  {
-    return _buffer.GetWritableSpan();
   }
 }

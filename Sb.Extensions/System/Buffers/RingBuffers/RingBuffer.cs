@@ -74,7 +74,6 @@ public class RingBuffer<T> : IList<T>, IReadOnlyList<T>
 
   public void Clear()
   {
-    Array.Clear(_buffer, 0, _buffer.Length);
     _head = 0;
     Count = 0;
   }
@@ -107,16 +106,16 @@ public class RingBuffer<T> : IList<T>, IReadOnlyList<T>
 
   public void CopyTo(T[] array, int arrayIndex)
   {
-    var span = GetWrittenSpan();
+    var span = this.WritableSpan;
     var dest = array.AsSpan(arrayIndex);
-    span.First.CopyTo(dest);
-    span.Second.CopyTo(dest.Slice(span.First.Length));
+    span.CopyTo(dest);
   }
 
   public int IndexOf(T item)
   {
     var i = 0;
-    foreach (var v in GetWrittenSpan())
+    var span = WrittenSpan;
+    foreach (var v in span)
     {
       if (EqualityComparer<T>.Default.Equals(item, v)) return i;
       i++;
@@ -262,45 +261,57 @@ public class RingBuffer<T> : IList<T>, IReadOnlyList<T>
     _mask = newBuffer.Length - 1;
   }
 
-  public RingBufferSpan<T> GetWrittenSpan()
+  public RingBufferSpan<T> WrittenSpan
   {
-    if (Count == 0) return new RingBufferSpan<T>(Span<T>.Empty, Span<T>.Empty, 0);
-
-    var start = _head & _mask;
-    var end = (_head + Count) & _mask;
-
-    if (end > start)
+    get
     {
-      var first = _buffer.AsSpan(start, Count);
-      var second = Span<T>.Empty;
-      return new RingBufferSpan<T>(first, second, Count);
-    }
-    else
-    {
-      var first = _buffer.AsSpan(start, _buffer.Length - start);
-      var second = _buffer.AsSpan(0, end);
-      return new RingBufferSpan<T>(first, second, Count);
+      if (Count == 0)
+      {
+        return new RingBufferSpan<T>(Span<T>.Empty, Span<T>.Empty, 0);
+      }
+
+      var start = _head & _mask;
+      var end = (_head + Count) & _mask;
+
+      if (end > start)
+      {
+        var first = _buffer.AsSpan(start, Count);
+        var second = Span<T>.Empty;
+        return new RingBufferSpan<T>(first, second, Count);
+      }
+      else
+      {
+        var first = _buffer.AsSpan(start, _buffer.Length - start);
+        var second = _buffer.AsSpan(0, end);
+        return new RingBufferSpan<T>(first, second, Count);
+      }
     }
   }
 
-  public RingBufferSpan<T> GetWritableSpan()
+  public RingBufferSpan<T> WritableSpan
   {
-    int writable = _buffer.Length - Count;
-    if (writable == 0) return new RingBufferSpan<T>(Span<T>.Empty, Span<T>.Empty, 0);
+    get
+    {
+      var writable = _buffer.Length - Count;
+      if (writable == 0)
+      {
+        return new RingBufferSpan<T>(Span<T>.Empty, Span<T>.Empty, 0);
+      }
 
-    var tail = (_head + Count) & _mask;
-    if (tail + writable <= _buffer.Length)
-    {
-      var first = _buffer.AsSpan(tail, writable);
-      var second = Span<T>.Empty;
-      return new RingBufferSpan<T>(first, second, writable);
-    }
-    else
-    {
-      var firstLen = _buffer.Length - tail;
-      var first = _buffer.AsSpan(tail, firstLen);
-      var second = _buffer.AsSpan(0, writable - firstLen);
-      return new RingBufferSpan<T>(first, second, writable);
+      var tail = (_head + Count) & _mask;
+      if (tail + writable <= _buffer.Length)
+      {
+        var first = _buffer.AsSpan(tail, writable);
+        var second = Span<T>.Empty;
+        return new RingBufferSpan<T>(first, second, writable);
+      }
+      else
+      {
+        var firstLen = _buffer.Length - tail;
+        var first = _buffer.AsSpan(tail, firstLen);
+        var second = _buffer.AsSpan(0, writable - firstLen);
+        return new RingBufferSpan<T>(first, second, writable);
+      }
     }
   }
 
@@ -329,9 +340,7 @@ public class RingBuffer<T> : IList<T>, IReadOnlyList<T>
   public T[] ToArray()
   {
     var result = new T[Count];
-    var span = GetWrittenSpan();
-    span.First.CopyTo(result.AsSpan(0, span.First.Length));
-    span.Second.CopyTo(result.AsSpan(span.First.Length, span.Second.Length));
+    CopyTo(result, 0);
     return result;
   }
 
@@ -374,7 +383,7 @@ public readonly ref struct RingBufferSpan<T>
   
   public int Count => Length;
   
-  public bool IsEmpty => this.Length == 0;
+  public bool IsEmpty => Length == 0;
 
   internal RingBufferSpan(Span<T> first, Span<T> second, int length)
   {
@@ -400,11 +409,9 @@ public readonly ref struct RingBufferSpan<T>
       return ref Second[index - First.Length];
     }
   }
-  
+
   public void CopyTo(Span<T> destination)
   {
-    if (destination.Length < Length)
-      throw new ArgumentException("目标空间不足");
     if (!First.IsEmpty)
     {
       First.CopyTo(destination);
@@ -418,16 +425,14 @@ public readonly ref struct RingBufferSpan<T>
 
   public void CopyFrom(ReadOnlySpan<T> source)
   {
-    if (source.Length < Length)
-      throw new ArgumentException("源数据不足");
-    if (First.Length >= Length)
+    if (First.Length >= source.Length)
     {
-      source[..Length].CopyTo(First);
+      source.CopyTo(First);
     }
     else
     {
       source[..First.Length].CopyTo(First);
-      source.Slice(First.Length, Second.Length).CopyTo(Second);
+      source.Slice(First.Length, source.Length - First.Length).CopyTo(Second);
     }
   }
   
