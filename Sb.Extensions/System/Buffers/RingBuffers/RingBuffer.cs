@@ -14,7 +14,7 @@ using System.Linq;
 
 namespace Sb.Extensions.System.Buffers.RingBuffers;
 
-public class RingBuffer<T> : IList<T>, IReadOnlyList<T>
+public class RingBuffer<T> : IList<T>, IReadOnlyList<T> where T : unmanaged
 {
   protected T[] Buffer;
   protected int Head;
@@ -272,7 +272,6 @@ public class RingBuffer<T> : IList<T>, IReadOnlyList<T>
 
     var index = (Head + Count - 1) & Mask;
     var v = Buffer[index];
-    Buffer[index] = default!;
     Count--;
     return v;
   }
@@ -283,24 +282,6 @@ public class RingBuffer<T> : IList<T>, IReadOnlyList<T>
     if (n > Count) throw new ArgumentOutOfRangeException(nameof(n), $"n ({n}) cannot be greater than Count ({Count}).");
     if (n == 0) return;
 
-    // Clear removed elements to prevent memory leaks
-    var start = (Head + Count - n) & Mask;
-    var end = (Head + Count) & Mask;
-
-    if (start < end)
-    {
-      // Single contiguous segment
-      Array.Clear(Buffer, start, n);
-    }
-    else
-    {
-      // Wrapped around
-      var firstSegmentLength = Buffer.Length - start;
-      Array.Clear(Buffer, start, firstSegmentLength);
-      var secondSegmentLength = n - firstSegmentLength;
-      if (secondSegmentLength > 0) Array.Clear(Buffer, 0, secondSegmentLength);
-    }
-
     Count -= n;
   }
 
@@ -310,7 +291,6 @@ public class RingBuffer<T> : IList<T>, IReadOnlyList<T>
 
     var index = Head & Mask;
     var v = Buffer[index];
-    Buffer[index] = default!;
     Head = (Head + 1) & Mask;
     Count--;
     return v;
@@ -322,23 +302,6 @@ public class RingBuffer<T> : IList<T>, IReadOnlyList<T>
     if (n > Count) throw new ArgumentOutOfRangeException(nameof(n), $"n ({n}) cannot be greater than Count ({Count}).");
     if (n == 0) return;
 
-    // Clear removed elements to prevent memory leaks
-    var start = Head & Mask;
-
-    if (start + n <= Buffer.Length)
-    {
-      // Single contiguous segment
-      Array.Clear(Buffer, start, n);
-    }
-    else
-    {
-      // Wrapped around
-      var firstSegmentLength = Buffer.Length - start;
-      Array.Clear(Buffer, start, firstSegmentLength);
-      var secondSegmentLength = n - firstSegmentLength;
-      if (secondSegmentLength > 0) Array.Clear(Buffer, 0, secondSegmentLength);
-    }
-
     Head = (Head + n) & Mask;
     Count -= n;
   }
@@ -347,10 +310,9 @@ public class RingBuffer<T> : IList<T>, IReadOnlyList<T>
   {
     var newBuffer = new T[Buffer.Length * 2];
 
-    var i = Head & Mask;
-    Buffer.AsSpan(i).CopyTo(newBuffer);
-
-    if (i != 0) Buffer.AsSpan(0, i).CopyTo(newBuffer.AsSpan(Buffer.Length - i));
+    // Copy only the written elements in logical order to the new buffer
+    var span = WrittenSpan;
+    span.CopyTo(newBuffer.AsSpan(0, span.Length));
 
     Head = 0;
     Buffer = newBuffer;
@@ -381,6 +343,8 @@ public class RingBuffer<T> : IList<T>, IReadOnlyList<T>
 
   public T[] ToArray()
   {
+    if (Count == 0) return [];
+
     var result = new T[Count];
     CopyTo(result, 0);
     return result;
