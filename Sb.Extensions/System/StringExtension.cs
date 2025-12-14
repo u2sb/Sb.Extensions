@@ -254,7 +254,8 @@ public static class StringExtension
     /// <param name="provider"></param>
     /// <returns>判断结果</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public bool IsFloat(NumberStyles styles = NumberStyles.Integer, IFormatProvider? provider = null)
+    public bool IsFloat(NumberStyles styles = NumberStyles.Float | NumberStyles.AllowThousands,
+      IFormatProvider? provider = null)
     {
       return float.TryParse(s, styles, provider, out _);
     }
@@ -267,7 +268,8 @@ public static class StringExtension
     /// <param name="provider"></param>
     /// <returns>是否转换成功</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public bool TryParseToFloat(out float result, NumberStyles styles = NumberStyles.Integer,
+    public bool TryParseToFloat(out float result,
+      NumberStyles styles = NumberStyles.Float | NumberStyles.AllowThousands,
       IFormatProvider? provider = null)
     {
       return float.TryParse(s, styles, provider, out result);
@@ -280,7 +282,8 @@ public static class StringExtension
     /// <param name="provider"></param>
     /// <returns>判断结果</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public bool IsDouble(NumberStyles styles = NumberStyles.Integer, IFormatProvider? provider = null)
+    public bool IsDouble(NumberStyles styles = NumberStyles.Float | NumberStyles.AllowThousands,
+      IFormatProvider? provider = null)
     {
       return double.TryParse(s, styles, provider, out _);
     }
@@ -293,7 +296,8 @@ public static class StringExtension
     /// <param name="provider"></param>
     /// <returns>是否转换成功</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public bool TryParseToDouble(out double result, NumberStyles styles = NumberStyles.Integer,
+    public bool TryParseToDouble(out double result,
+      NumberStyles styles = NumberStyles.Float | NumberStyles.AllowThousands,
       IFormatProvider? provider = null)
     {
       return double.TryParse(s, styles, provider, out result);
