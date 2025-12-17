@@ -45,9 +45,9 @@ public class FixedSizeRingBuffer<T> : IEnumerable<T> where T : unmanaged
 
   public IEnumerator<T> GetEnumerator()
   {
-    foreach (var item in this)
+    for (var i = 0; i < Count; i++)
     {
-      yield return item;
+      yield return this[i];
     }
   }
 
